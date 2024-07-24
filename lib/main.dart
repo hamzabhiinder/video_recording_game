@@ -22,6 +22,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'gpt_response3.dart/recording_screen/HeaderCameraScoreWidget.dart';
+import 'gpt_response3.dart/recording_screen/recording_play_pause.dart';
 import 'gpt_response3.dart/score_provider.dart';
 import 'gpt_response3.dart/video_player_page.dart';
 
@@ -385,6 +386,7 @@ class _RecordScreenState extends State<RecordScreen> {
   @override
   Widget build(BuildContext context) {
     final matchDetails = Provider.of<ScoreProvider>(context).matchDetails;
+    final bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
     return Scaffold(
       backgroundColor: Colors.black,
       body: FutureBuilder<void>(
@@ -395,7 +397,7 @@ class _RecordScreenState extends State<RecordScreen> {
               children: [
                 Positioned.fill(
                     child: AspectRatio(
-                        aspectRatio: _controller.value.aspectRatio,
+                        aspectRatio: 1 / _controller.value.aspectRatio,
                         child: CameraPreview(_controller))),
                 HeaderCameraScoreWidget(
                   isOpaque: isOpaque,
@@ -406,102 +408,234 @@ class _RecordScreenState extends State<RecordScreen> {
                     _startOpacityTimer();
                   },
                 ),
-                Positioned(
-                  top: MediaQuery.of(context).size.height * 0.55,
-                  left: MediaQuery.of(context).size.width * 0.22,
-                  // right: 0,
-                  child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.center,
-                    // crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          // mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            FloatingActionButton(
-                              shape: CircleBorder(),
-                              backgroundColor: Colors.grey.shade700,
-                              onPressed: () {
-                                if (videoPath.isNotEmpty) {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => VideoPlayerPage(filePath: videoPath),
-                                    ),
-                                  );
-                                }
-                              },
-                              child: const Center(
-                                child: Icon(
-                                  Icons.play_arrow,
-                                  size: 50,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 20),
-                            Container(
-                              height: 80,
-                              width: 80,
-                              decoration: BoxDecoration(
-                                  color: Colors.grey.shade700,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: Colors.white, width: 2)),
-                              child: IconButton(
-                                onPressed: () {
-                                  if (isRecording) {
-                                    if (isPaused) {
-                                      resumeRecording(context);
-                                    } else {
-                                      pauseRecording(context);
-                                    }
-                                  } else {
-                                    startRecording(context);
-                                  }
-                                },
-                                icon: Icon(isRecording
-                                    ? (isPaused ? Icons.play_arrow : Icons.pause)
-                                    : Icons.circle),
-                              ),
-                            ),
-                            const SizedBox(width: 20),
-                            FloatingActionButton(
-                              shape: CircleBorder(),
-                              backgroundColor: Colors.grey.shade700,
-                              onPressed: () {
-                                //  changePeriod(context);
-                                if (isRecording) {
-                                  stopRecording(context);
-                                }
-                                _showEndMatchDialog(context);
-                              },
-                              child: const Center(
-                                child: Icon(
-                                  Icons.check,
-                                  size: 45,
-                                ),
-                              ),
-                            ),
-                          ],
+                isPortrait
+                    ? Positioned(
+                        top: MediaQuery.of(context).size.height * 0.6,
+                        left: 0,
+                        right: 0,
+                        child: RecordingControls(
+                          isRecording: isRecording,
+                          isPaused: isPaused,
+                          videoPath: videoPath,
+                          startRecording: () => startRecording(context),
+                          pauseRecording: () => pauseRecording(context),
+                          resumeRecording: () => resumeRecording(context),
+                          stopRecording: () => stopRecording(context),
+                          showEndMatchDialog: () => _showEndMatchDialog(context),
+                        ),
+                      )
+                    : Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: RecordingControls(
+                          isRecording: isRecording,
+                          isPaused: isPaused,
+                          videoPath: videoPath,
+                          startRecording: () => startRecording(context),
+                          pauseRecording: () => pauseRecording(context),
+                          resumeRecording: () => resumeRecording(context),
+                          stopRecording: () => stopRecording(context),
+                          showEndMatchDialog: () => _showEndMatchDialog(context),
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Center(
-                        child: Consumer<StopwatchProvider>(
-                          builder: (context, stopwatchProvider, child) {
-                            return Text(
-                              stopwatchProvider.formatDuration(stopwatchProvider.elapsedTime),
-                              style: TextStyle(
-                                  fontSize: getResponsiveFontSize(context, 15),
-                                  color: Colors.white.withOpacity(0.4),
-                                  // backgroundColor: Colors.redAccent,
-                                  decorationStyle: TextDecorationStyle.dotted),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // // Play And Pause Button
+                // MediaQuery.of(context).orientation.index == 0
+                //     ? Positioned(
+                //         top: MediaQuery.of(context).size.height * 0.55,
+                //         left: MediaQuery.of(context).size.width * 0.22,
+                //         // right: 0,
+                //         child: Column(
+                //           // mainAxisAlignment: MainAxisAlignment.center,
+                //           // crossAxisAlignment: CrossAxisAlignment.center,
+                //           children: [
+                //             Center(
+                //               child: Row(
+                //                 mainAxisSize: MainAxisSize.min,
+                //                 // mainAxisAlignment: MainAxisAlignment.center,
+                //                 children: [
+                //                   FloatingActionButton(
+                //                     shape: CircleBorder(),
+                //                     backgroundColor: Colors.grey.shade700,
+                //                     onPressed: () {
+                //                       if (videoPath.isNotEmpty) {
+                //                         Navigator.of(context).push(
+                //                           MaterialPageRoute(
+                //                             builder: (context) =>
+                //                                 VideoPlayerPage(filePath: videoPath),
+                //                           ),
+                //                         );
+                //                       }
+                //                     },
+                //                     child: const Center(
+                //                       child: Icon(
+                //                         Icons.play_arrow,
+                //                         size: 50,
+                //                       ),
+                //                     ),
+                //                   ),
+                //                   const SizedBox(width: 20),
+                //                   Container(
+                //                     height: 80,
+                //                     width: 80,
+                //                     decoration: BoxDecoration(
+                //                         color: Colors.grey.shade700,
+                //                         shape: BoxShape.circle,
+                //                         border: Border.all(color: Colors.white, width: 2)),
+                //                     child: IconButton(
+                //                       onPressed: () {
+                //                         if (isRecording) {
+                //                           if (isPaused) {
+                //                             resumeRecording(context);
+                //                           } else {
+                //                             pauseRecording(context);
+                //                           }
+                //                         } else {
+                //                           startRecording(context);
+                //                         }
+                //                       },
+                //                       icon: Icon(isRecording
+                //                           ? (isPaused ? Icons.play_arrow : Icons.pause)
+                //                           : Icons.circle),
+                //                     ),
+                //                   ),
+                //                   const SizedBox(width: 20),
+                //                   FloatingActionButton(
+                //                     shape: CircleBorder(),
+                //                     backgroundColor: Colors.grey.shade700,
+                //                     onPressed: () {
+                //                       //  changePeriod(context);
+                //                       if (isRecording) {
+                //                         stopRecording(context);
+                //                       }
+                //                       _showEndMatchDialog(context);
+                //                     },
+                //                     child: const Center(
+                //                       child: Icon(
+                //                         Icons.check,
+                //                         size: 45,
+                //                       ),
+                //                     ),
+                //                   ),
+                //                 ],
+                //               ),
+                //             ),
+                //             SizedBox(height: 10),
+                //             Center(
+                //               child: Consumer<StopwatchProvider>(
+                //                 builder: (context, stopwatchProvider, child) {
+                //                   return Text(
+                //                     stopwatchProvider.formatDuration(stopwatchProvider.elapsedTime),
+                //                     style: TextStyle(
+                //                         fontSize: getResponsiveFontSize(context, 15),
+                //                         color: Colors.white.withOpacity(0.4),
+                //                         // backgroundColor: Colors.redAccent,
+                //                         decorationStyle: TextDecorationStyle.dotted),
+                //                   );
+                //                 },
+                //               ),
+                //             ),
+                //           ],
+                //         ),
+                //       )
+                //     : Positioned(
+                //         left: 0,
+                //         right: 0,
+                //         bottom: 0,
+                //         child: Column(
+                //           // mainAxisAlignment: MainAxisAlignment.center,
+                //           // crossAxisAlignment: CrossAxisAlignment.center,
+                //           children: [
+                //             Center(
+                //               child: Row(
+                //                 mainAxisSize: MainAxisSize.min,
+                //                 // mainAxisAlignment: MainAxisAlignment.center,
+                //                 children: [
+                //                   FloatingActionButton(
+                //                     shape: CircleBorder(),
+                //                     backgroundColor: Colors.grey.shade700,
+                //                     onPressed: () {
+                //                       if (videoPath.isNotEmpty) {
+                //                         Navigator.of(context).push(
+                //                           MaterialPageRoute(
+                //                             builder: (context) =>
+                //                                 VideoPlayerPage(filePath: videoPath),
+                //                           ),
+                //                         );
+                //                       }
+                //                     },
+                //                     child: const Center(
+                //                       child: Icon(
+                //                         Icons.play_arrow,
+                //                         size: 50,
+                //                       ),
+                //                     ),
+                //                   ),
+                //                   const SizedBox(width: 20),
+                //                   Container(
+                //                     height: 80,
+                //                     width: 80,
+                //                     decoration: BoxDecoration(
+                //                         color: Colors.grey.shade700,
+                //                         shape: BoxShape.circle,
+                //                         border: Border.all(color: Colors.white, width: 2)),
+                //                     child: IconButton(
+                //                       onPressed: () {
+                //                         if (isRecording) {
+                //                           if (isPaused) {
+                //                             resumeRecording(context);
+                //                           } else {
+                //                             pauseRecording(context);
+                //                           }
+                //                         } else {
+                //                           startRecording(context);
+                //                         }
+                //                       },
+                //                       icon: Icon(isRecording
+                //                           ? (isPaused ? Icons.play_arrow : Icons.pause)
+                //                           : Icons.circle),
+                //                     ),
+                //                   ),
+                //                   const SizedBox(width: 20),
+                //                   FloatingActionButton(
+                //                     shape: CircleBorder(),
+                //                     backgroundColor: Colors.grey.shade700,
+                //                     onPressed: () {
+                //                       //  changePeriod(context);
+                //                       if (isRecording) {
+                //                         stopRecording(context);
+                //                       }
+                //                       _showEndMatchDialog(context);
+                //                     },
+                //                     child: const Center(
+                //                       child: Icon(
+                //                         Icons.check,
+                //                         size: 45,
+                //                       ),
+                //                     ),
+                //                   ),
+                //                 ],
+                //               ),
+                //             ),
+                //             SizedBox(height: 10),
+                //             Center(
+                //               child: Consumer<StopwatchProvider>(
+                //                 builder: (context, stopwatchProvider, child) {
+                //                   return Text(
+                //                     stopwatchProvider.formatDuration(stopwatchProvider.elapsedTime),
+                //                     style: TextStyle(
+                //                         fontSize: getResponsiveFontSize(context, 15),
+                //                         color: Colors.white.withOpacity(0.4),
+                //                         // backgroundColor: Colors.redAccent,
+                //                         decorationStyle: TextDecorationStyle.dotted),
+                //                   );
+                //                 },
+                //               ),
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+
                 HomeScreen(
                   isRecording: isRecording,
                   onStopRecording: () {
@@ -535,7 +669,6 @@ class ScoreButton extends StatelessWidget {
   final bool isRecording;
   final bool isOpaque;
   final Function onScoreTap;
-  final double rotateText;
   const ScoreButton({
     Key? key,
     required this.score,
@@ -546,7 +679,6 @@ class ScoreButton extends StatelessWidget {
     required this.isRecording,
     required this.isOpaque,
     required this.onScoreTap,
-    required this.rotateText,
   }) : super(key: key);
 
   @override
@@ -571,13 +703,10 @@ class ScoreButton extends StatelessWidget {
         backgroundColor: color.withOpacity(0.6),
         shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(3)),
       ),
-      child: Transform.rotate(
-        angle: rotateText,
-        child: Text(
-          description,
-          style: TextStyle(fontSize: getResponsiveFontSize(context, 20), color: Colors.black54),
-          maxLines: 1,
-        ),
+      child: Text(
+        description,
+        style: TextStyle(fontSize: 20, color: Colors.black54),
+        maxLines: 1,
       ),
     );
   }

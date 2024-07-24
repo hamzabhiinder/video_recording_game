@@ -4,6 +4,7 @@ import 'package:camera_recording_game/gpt_response3.dart/resonsive_helper.dart';
 import 'package:camera_recording_game/gpt_response3.dart/screen_ui_Score.dart';
 import 'package:camera_recording_game/reording_app_hint.dart/result.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
 
 import '/gpt_response3.dart/score_provider.dart';
 import '/main.dart';
@@ -35,6 +36,47 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final List<List<Map<String, dynamic>>> redButtons = [
+    [
+      {'score': 1, 'description': 'P1', 'color': Colors.red},
+      {'score': 2, 'description': 'P2', 'color': Colors.red},
+      {'score': 0, 'description': 'C0', 'color': Colors.red},
+      {'score': 1, 'description': 'V1', 'color': Colors.red},
+    ],
+    [
+      {'score': 3, 'description': 'N3', 'color': Colors.red},
+      {'score': 4, 'description': 'N4', 'color': Colors.red},
+      {'score': 5, 'description': 'N5', 'color': Colors.red},
+      {'score': 0, 'description': 'S0', 'color': Colors.red},
+    ],
+    [
+      {'score': 3, 'description': 'T3', 'color': Colors.red},
+      {'score': 1, 'description': 'E1', 'color': Colors.red},
+      {'score': 2, 'description': 'R2', 'color': Colors.red},
+      {'score': 2, 'description': 'N2', 'color': Colors.red},
+    ],
+  ];
+
+  final List<List<Map<String, dynamic>>> greenButtons = [
+    [
+      {'score': 3, 'description': 'T3', 'color': Colors.green},
+      {'score': 1, 'description': 'E1', 'color': Colors.green},
+      {'score': 2, 'description': 'R2', 'color': Colors.green},
+      {'score': 2, 'description': 'N2', 'color': Colors.green},
+    ],
+    [
+      {'score': 1, 'description': 'P1', 'color': Colors.green},
+      {'score': 2, 'description': 'P2', 'color': Colors.green},
+      {'score': 0, 'description': 'C0', 'color': Colors.green},
+      {'score': 1, 'description': 'V1', 'color': Colors.green},
+    ],
+    [
+      {'score': 3, 'description': 'N3', 'color': Colors.green},
+      {'score': 4, 'description': 'N4', 'color': Colors.green},
+      {'score': 5, 'description': 'N5', 'color': Colors.green},
+      {'score': 0, 'description': 'S0', 'color': Colors.green},
+    ],
+  ];
   final List<List<Map<String, dynamic>>> buttonLabels = [
     [
       {'score': 1, 'description': 'P1', 'color': Colors.red},
@@ -262,8 +304,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var orientationLayOut = MediaQuery.of(context).orientation;
-    log('var orientation = MediaQuery.of(context).orientation;  ${orientationLayOut.name}');
+    final bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+
     return Positioned(
       bottom: 10,
       left: 0,
@@ -369,53 +411,172 @@ class _HomeScreenState extends State<HomeScreen> {
             // ),
             Opacity(opacity: widget.isOpaque ? 1 : 0, child: ScoreDisplayScreen()),
 
-            OrientationBuilder(builder: (BuildContext context, Orientation orientation) {
-              final rotationAngle = orientation == Orientation.portrait ? 0.0 : -1.57;
-              log('rotationAngle  ${orientation}');
-              return Align(
-                alignment: const Alignment(0, 0),
-                child: SizedBox(
-                  height: 200,
-                  child: PageView.builder(
-                    controller: _pageController,
-                    itemCount: buttonLabels.length,
-                    itemBuilder: (context, pageIndex) {
-                      return GridView.builder(
-                        padding: const EdgeInsets.all(16.0),
-                        physics: NeverScrollableScrollPhysics(),
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4,
-                          crossAxisSpacing: 5.0,
-                          mainAxisSpacing: 10.0,
-                          childAspectRatio: 1,
-                        ),
-                        itemCount: buttonLabels[pageIndex].length,
-                        itemBuilder: (context, buttonIndex) {
-                          var data = buttonLabels[pageIndex][buttonIndex];
-                          log('data[color]  ${data['color']} ${context.read<ScoreProvider>().matchDetails['RedOpp']}}');
-                          return RotatedBox(
-                            quarterTurns: orientationLayOut == Orientation.portrait ? 0 : 1,
-                            child: ScoreButton(
-                              isRecording: widget.isRecording,
-                              period: context.read<ScoreProvider>().currentPeriod,
-                              score: data['score'],
-                              description: data['description'],
-                              color: data['color'],
-                              player: data['color'] == Colors.red
-                                  ? context.read<ScoreProvider>().matchDetails['RedOpp']
-                                  : context.read<ScoreProvider>().matchDetails['GreenOpp'],
-                              isOpaque: widget.isOpaque,
-                              onScoreTap: widget.onScoreTap,
-                              rotateText: rotationAngle,
+            isPortrait
+                ? Align(
+                    alignment: const Alignment(0, 0),
+                    child: SizedBox(
+                      height: 200,
+                      child: PageView.builder(
+                        controller: _pageController,
+                        itemCount: buttonLabels.length,
+                        itemBuilder: (context, pageIndex) {
+                          return GridView.builder(
+                            padding: const EdgeInsets.all(16.0),
+                            physics: NeverScrollableScrollPhysics(),
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 4,
+                              crossAxisSpacing: 5.0,
+                              mainAxisSpacing: 10.0,
+                              childAspectRatio: 1,
                             ),
+                            itemCount: buttonLabels[pageIndex].length,
+                            itemBuilder: (context, buttonIndex) {
+                              var data = buttonLabels[pageIndex][buttonIndex];
+                              log('data[color]  ${data['color']} ${context.read<ScoreProvider>().matchDetails['RedOpp']}}');
+                              return ScoreButton(
+                                isRecording: widget.isRecording,
+                                period: context.read<ScoreProvider>().currentPeriod,
+                                score: data['score'],
+                                description: data['description'],
+                                color: data['color'],
+                                player: data['color'] == Colors.red
+                                    ? context.read<ScoreProvider>().matchDetails['RedOpp']
+                                    : context.read<ScoreProvider>().matchDetails['GreenOpp'],
+                                isOpaque: widget.isOpaque,
+                                onScoreTap: widget.onScoreTap,
+                              );
+                            },
                           );
                         },
-                      );
-                    },
+                      ),
+                    ),
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: 200,
+                        height: 200,
+                        child: PageView.builder(
+                            // controller: PageController(),
+                            itemCount: redButtons.length,
+                            itemBuilder: (context, pageIndex) {
+                              return GridView.builder(
+                                padding: const EdgeInsets.all(16.0),
+                                physics: NeverScrollableScrollPhysics(),
+                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 20,
+                                  mainAxisSpacing: 10.0,
+                                  childAspectRatio: 1,
+                                ),
+                                itemCount: redButtons[pageIndex].length,
+                                itemBuilder: (context, buttonIndex) {
+                                  var data = redButtons[pageIndex][buttonIndex];
+                                  log('data[color]  ${data['color']} ${context.read<ScoreProvider>().matchDetails['RedOpp']}}');
+                                  return ScoreButton(
+                                    isRecording: widget.isRecording,
+                                    period: context.read<ScoreProvider>().currentPeriod,
+                                    score: data['score'],
+                                    description: data['description'],
+                                    color: data['color'],
+                                    player: data['color'] == Colors.red
+                                        ? context.read<ScoreProvider>().matchDetails['RedOpp']
+                                        : context.read<ScoreProvider>().matchDetails['GreenOpp'],
+                                    isOpaque: widget.isOpaque,
+                                    onScoreTap: widget.onScoreTap,
+                                  );
+                                },
+                              );
+                            }),
+                      ),
+                      Container(
+                        width: 200,
+                        height: 200,
+                        // color: Colors.green,
+                        child: PageView.builder(
+                            // controller: PageController(),
+                            itemCount: greenButtons.length,
+                            itemBuilder: (context, pageIndex) {
+                              return GridView.builder(
+                                padding: const EdgeInsets.all(16.0),
+                                physics: NeverScrollableScrollPhysics(),
+                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 20,
+                                  mainAxisSpacing: 10.0,
+                                  childAspectRatio: 1,
+                                ),
+                                itemCount: greenButtons[pageIndex].length,
+                                itemBuilder: (context, buttonIndex) {
+                                  var data = greenButtons[pageIndex][buttonIndex];
+                                  log('data[color]  ${data['color']} ${context.read<ScoreProvider>().matchDetails['RedOpp']}}');
+                                  return ScoreButton(
+                                    isRecording: widget.isRecording,
+                                    period: context.read<ScoreProvider>().currentPeriod,
+                                    score: data['score'],
+                                    description: data['description'],
+                                    color: data['color'],
+                                    player: data['color'] == Colors.red
+                                        ? context.read<ScoreProvider>().matchDetails['RedOpp']
+                                        : context.read<ScoreProvider>().matchDetails['GreenOpp'],
+                                    isOpaque: widget.isOpaque,
+                                    onScoreTap: widget.onScoreTap,
+                                  );
+                                },
+                              );
+                            }),
+                      )
+                    ],
                   ),
-                ),
-              );
-            }),
+            // Align(
+            //     alignment: const Alignment(0, 0),
+            //     child: SizedBox(
+            //       height: 150,
+            //       child: PageView.builder(
+            //         controller: _pageController,
+            //         itemCount: buttonLabels.length,
+            //         itemBuilder: (context, pageIndex) {
+            //           return GridView.builder(
+            //             padding: const EdgeInsets.all(16.0),
+            //             physics: NeverScrollableScrollPhysics(),
+            //             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            //               crossAxisCount: 4,
+            //               crossAxisSpacing: 20,
+            //               mainAxisSpacing: 10.0,
+            //               childAspectRatio: 2,
+            //             ),
+            //             itemCount: buttonLabels[pageIndex].length,
+            //             itemBuilder: (context, buttonIndex) {
+            //               var data = buttonLabels[pageIndex][buttonIndex];
+            //               log('data[color]  ${data['color']} ${context.read<ScoreProvider>().matchDetails['RedOpp']}}');
+            //               return Container(
+            //                 margin: EdgeInsets.only(
+            //                   right: (buttonIndex % 2 == 1) ? 40.0 : 0.0,
+            //                 ),
+            //                 child: RotatedBox(
+            //                   quarterTurns: isPortrait ? 0 : 1,
+            //                   child: ScoreButton(
+            //                     isRecording: widget.isRecording,
+            //                     period: context.read<ScoreProvider>().currentPeriod,
+            //                     score: data['score'],
+            //                     description: data['description'],
+            //                     color: data['color'],
+            //                     player: data['color'] == Colors.red
+            //                         ? context.read<ScoreProvider>().matchDetails['RedOpp']
+            //                         : context.read<ScoreProvider>().matchDetails['GreenOpp'],
+            //                     isOpaque: widget.isOpaque,
+            //                     onScoreTap: widget.onScoreTap,
+            //                     rotateText: -1.57,
+            //                   ),
+            //                 ),
+            //               );
+            //             },
+            //           );
+            //         },
+            //       ),
+            //     ),
+            //   ),
           ],
         ),
       ),
