@@ -63,7 +63,7 @@ class StopwatchProvider with ChangeNotifier {
     if (duration.inHours > 0) {
       return "$hours:$minutes:$seconds.$milliseconds";
     } else if (duration.inMinutes > 0) {
-      return "$minutes:$seconds.$milliseconds";
+      return "$minutes:$seconds";
     } else {
       return "$seconds:$milliseconds";
     }

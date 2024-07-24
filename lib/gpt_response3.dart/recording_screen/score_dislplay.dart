@@ -127,36 +127,81 @@ class ScoreDisplayScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.55,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          SizedBox(
-            width: 100,
-            child: Consumer<ScoreProvider>(
-              builder: (context, scoreProvider, child) {
-                return ListView(
-                  shrinkWrap: true,
-                  children: _buildPeriodScores(context, scoreProvider, Colors.red),
-                );
-              },
+    final bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+
+    return isPortrait
+        ? SizedBox(
+            height: MediaQuery.of(context).size.height * 0.55,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  color: Colors.red.withOpacity(0.3),
+                  width: 50,
+                  child: Consumer<ScoreProvider>(
+                    builder: (context, scoreProvider, child) {
+                      return ListView(
+                        shrinkWrap: true,
+                        children: _buildPeriodScores(context, scoreProvider, Colors.red),
+                      );
+                    },
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  color: Colors.green.withOpacity(0.3),
+                  width: 50,
+                  child: Consumer<ScoreProvider>(
+                    builder: (context, scoreProvider, child) {
+                      return ListView(
+                        reverse: true,
+                        shrinkWrap: true,
+                        children: _buildPeriodScores(context, scoreProvider, Colors.green),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ),
-          SizedBox(
-            width: 50,
-            child: Consumer<ScoreProvider>(
-              builder: (context, scoreProvider, child) {
-                return ListView(
-                  shrinkWrap: true,
-                  children: _buildPeriodScores(context, scoreProvider, Colors.green),
-                );
-              },
+          )
+        : SizedBox(
+            height: MediaQuery.of(context).size.height * 0.55,
+            child: Row(
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: 130,
+                ),
+                SizedBox(
+                  width: 50,
+                  child: Consumer<ScoreProvider>(
+                    builder: (context, scoreProvider, child) {
+                      return ListView(
+                        shrinkWrap: true,
+                        children: _buildPeriodScores(context, scoreProvider, Colors.red),
+                      );
+                    },
+                  ),
+                ),
+                Spacer(),
+                SizedBox(
+                  width: 50,
+                  child: Consumer<ScoreProvider>(
+                    builder: (context, scoreProvider, child) {
+                      return ListView(
+                        shrinkWrap: true,
+                        children: _buildPeriodScores(context, scoreProvider, Colors.green),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: 120,
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 
   List<Widget> _buildPeriodScores(BuildContext context, ScoreProvider scoreProvider, Color color) {
@@ -171,7 +216,7 @@ class ScoreDisplayScreen extends StatelessWidget {
     periodMap.forEach((period, scores) {
       periodWidgets.add(
         Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               color: Colors.black,
@@ -193,7 +238,7 @@ class ScoreDisplayScreen extends StatelessWidget {
                       // scoreProvider.deleteScore(score.matchScoreID);
                     },
                     child: Container(
-                      color: color,
+                      // color: color.withOpacity(0.7),
                       padding: EdgeInsets.all(8.0),
                       child: Text(
                         score.description,
@@ -223,6 +268,6 @@ class ScoreDisplayScreen extends StatelessWidget {
       );
     });
 
-    return periodWidgets;
+    return periodWidgets.reversed.toList();
   }
 }
