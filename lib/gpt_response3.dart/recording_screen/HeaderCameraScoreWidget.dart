@@ -23,11 +23,12 @@ class HeaderCameraScoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    final bool isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
 
     return isPortrait
         ? Positioned(
-            top: 50,
+            top: 20,
             left: 0,
             right: 0,
             height: 125, // Total height for three containers
@@ -78,14 +79,17 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                       showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
-                                          String newName = scoreProvider.matchDetails['RedOpp'];
+                                          String newName = scoreProvider
+                                              .matchDetails['RedOpp'];
                                           return AlertDialog(
                                             title: Text('Update Opponent Name'),
                                             content: TextField(
-                                              decoration: InputDecoration(hintText: newName),
+                                              decoration: InputDecoration(
+                                                  hintText: newName),
                                               onChanged: (value) {
                                                 newName = value;
-                                                scoreProvider.updateMatchDetail('RedOpp', value);
+                                                scoreProvider.updateMatchDetail(
+                                                    'RedOpp', value);
                                               },
                                             ),
                                             actions: <Widget>[
@@ -129,24 +133,29 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                             return Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Consumer<ScoreProvider>(builder: (context, scoreProvider, child) {
+                                Consumer<ScoreProvider>(
+                                    builder: (context, scoreProvider, child) {
                                   return DropdownButtonHideUnderline(
                                     // Hide the underline
                                     child: DropdownButton<int>(
                                       value: scoreProvider.currentPeriod,
-                                      dropdownColor:
-                                          Colors.grey.shade400.withOpacity(0.6), // 60% transparency
+                                      dropdownColor: Colors.grey.shade400
+                                          .withOpacity(0.6), // 60% transparency
                                       style: TextStyle(
                                           color: Colors.white,
-                                          fontSize: getResponsiveFontSize(context, 20)),
+                                          fontSize: getResponsiveFontSize(
+                                              context, 20)),
                                       onChanged: (int? newValue) {
                                         if (newValue != null) {
-                                          scoreProvider.setCurrentPeriod(newValue);
+                                          scoreProvider
+                                              .setCurrentPeriod(newValue);
                                         }
                                       },
                                       iconSize: 2,
-                                      items: List.generate(8, (index) => index + 1)
-                                          .map<DropdownMenuItem<int>>((int value) {
+                                      items:
+                                          List.generate(8, (index) => index + 1)
+                                              .map<DropdownMenuItem<int>>(
+                                                  (int value) {
                                         return DropdownMenuItem<int>(
                                           value: value,
                                           child: Center(
@@ -154,7 +163,9 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                               'Period $value',
                                               style: TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: getResponsiveFontSize(context, 24)),
+                                                  fontSize:
+                                                      getResponsiveFontSize(
+                                                          context, 24)),
                                             ),
                                           ),
                                         );
@@ -173,8 +184,8 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                 Text(
                                   '${stopwatchProvider.formatDuration(stopwatchProvider.elapsedTime)}',
                                   style: TextStyle(
-                                    fontSize:
-                                        getResponsiveFontSize(context, 36), // Increased font size
+                                    fontSize: getResponsiveFontSize(
+                                        context, 36), // Increased font size
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -229,14 +240,17 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                       showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
-                                          String newName = scoreProvider.matchDetails['GreenOpp'];
+                                          String newName = scoreProvider
+                                              .matchDetails['GreenOpp'];
                                           return AlertDialog(
                                             title: Text('Update Opponent Name'),
                                             content: TextField(
-                                              decoration: InputDecoration(hintText: newName),
+                                              decoration: InputDecoration(
+                                                  hintText: newName),
                                               onChanged: (value) {
                                                 newName = value;
-                                                scoreProvider.updateMatchDetail('GreenOpp', value);
+                                                scoreProvider.updateMatchDetail(
+                                                    'GreenOpp', value);
                                               },
                                             ),
                                             actions: <Widget>[
@@ -314,14 +328,19 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                         showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
-                                            String newName = scoreProvider.matchDetails['RedOpp'];
+                                            String newName = scoreProvider
+                                                .matchDetails['RedOpp'];
                                             return AlertDialog(
-                                              title: Text('Update Opponent Name'),
+                                              title:
+                                                  Text('Update Opponent Name'),
                                               content: TextField(
-                                                decoration: InputDecoration(hintText: newName),
+                                                decoration: InputDecoration(
+                                                    hintText: newName),
                                                 onChanged: (value) {
                                                   newName = value;
-                                                  scoreProvider.updateMatchDetail('RedOpp', value);
+                                                  scoreProvider
+                                                      .updateMatchDetail(
+                                                          'RedOpp', value);
                                                 },
                                               ),
                                               actions: <Widget>[
@@ -380,24 +399,29 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                             return Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Consumer<ScoreProvider>(builder: (context, scoreProvider, child) {
+                                Consumer<ScoreProvider>(
+                                    builder: (context, scoreProvider, child) {
                                   return DropdownButtonHideUnderline(
                                     // Hide the underline
                                     child: DropdownButton<int>(
                                       value: scoreProvider.currentPeriod,
-                                      dropdownColor:
-                                          Colors.grey.shade400.withOpacity(0.6), // 60% transparency
+                                      dropdownColor: Colors.grey.shade400
+                                          .withOpacity(0.6), // 60% transparency
                                       style: TextStyle(
                                           color: Colors.white,
-                                          fontSize: getResponsiveFontSize(context, 20)),
+                                          fontSize: getResponsiveFontSize(
+                                              context, 20)),
                                       onChanged: (int? newValue) {
                                         if (newValue != null) {
-                                          scoreProvider.setCurrentPeriod(newValue);
+                                          scoreProvider
+                                              .setCurrentPeriod(newValue);
                                         }
                                       },
                                       iconSize: 2,
-                                      items: List.generate(8, (index) => index + 1)
-                                          .map<DropdownMenuItem<int>>((int value) {
+                                      items:
+                                          List.generate(8, (index) => index + 1)
+                                              .map<DropdownMenuItem<int>>(
+                                                  (int value) {
                                         return DropdownMenuItem<int>(
                                           value: value,
                                           child: Center(
@@ -405,7 +429,9 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                               'Period $value',
                                               style: TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: getResponsiveFontSize(context, 16)),
+                                                  fontSize:
+                                                      getResponsiveFontSize(
+                                                          context, 16)),
                                             ),
                                           ),
                                         );
@@ -484,15 +510,19 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                         showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
-                                            String newName = scoreProvider.matchDetails['GreenOpp'];
+                                            String newName = scoreProvider
+                                                .matchDetails['GreenOpp'];
                                             return AlertDialog(
-                                              title: Text('Update Opponent Name'),
+                                              title:
+                                                  Text('Update Opponent Name'),
                                               content: TextField(
-                                                decoration: InputDecoration(hintText: newName),
+                                                decoration: InputDecoration(
+                                                    hintText: newName),
                                                 onChanged: (value) {
                                                   newName = value;
-                                                  scoreProvider.updateMatchDetail(
-                                                      'GreenOpp', value);
+                                                  scoreProvider
+                                                      .updateMatchDetail(
+                                                          'GreenOpp', value);
                                                 },
                                               ),
                                               actions: <Widget>[
@@ -537,7 +567,8 @@ class PositionLabel extends StatefulWidget {
   final Color backgroundColor;
   final Function(String) onPositionChange;
 
-  PositionLabel({required this.backgroundColor, required this.onPositionChange});
+  PositionLabel(
+      {required this.backgroundColor, required this.onPositionChange});
 
   @override
   _PositionLabelState createState() => _PositionLabelState();
@@ -557,7 +588,8 @@ class _PositionLabelState extends State<PositionLabel> {
         alignment: Alignment.center,
         child: Text(
           position,
-          style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
       ),
@@ -596,7 +628,9 @@ class _PositionLabelState extends State<PositionLabel> {
       },
       child: Text(
         newPosition,
-        style: TextStyle(fontSize: getResponsiveFontSize(context, 14), fontWeight: FontWeight.bold),
+        style: TextStyle(
+            fontSize: getResponsiveFontSize(context, 14),
+            fontWeight: FontWeight.bold),
       ),
     );
   }

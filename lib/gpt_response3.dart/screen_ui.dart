@@ -154,7 +154,8 @@ class _HomeScreenState extends State<HomeScreen> {
         TextEditingController(text: score.scoreID.toString());
     final TextEditingController descriptionController =
         TextEditingController(text: score.description);
-    final TextEditingController playerController = TextEditingController(text: score.scorer);
+    final TextEditingController playerController =
+        TextEditingController(text: score.scorer);
     final TextEditingController periodController =
         TextEditingController(text: score.period.toString());
     Color selectedColor = score.color;
@@ -190,8 +191,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   onChanged: (Color? newValue) {
                     selectedColor = newValue!;
                   },
-                  items:
-                      <Color>[Colors.red, Colors.green].map<DropdownMenuItem<Color>>((Color value) {
+                  items: <Color>[Colors.red, Colors.green]
+                      .map<DropdownMenuItem<Color>>((Color value) {
                     return DropdownMenuItem<Color>(
                       value: value,
                       child: Text(value == Colors.red ? 'Red' : 'Green'),
@@ -304,7 +305,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    final bool isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
 
     return Positioned(
       bottom: 10,
@@ -409,7 +411,8 @@ class _HomeScreenState extends State<HomeScreen> {
             //     );
             //   },
             // ),
-            Opacity(opacity: widget.isOpaque ? 1 : 0, child: ScoreDisplayScreen()),
+            Opacity(
+                opacity: widget.isOpaque ? 1 : 0, child: ScoreDisplayScreen()),
 
             isPortrait
                 ? Align(
@@ -423,10 +426,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           return GridView.builder(
                             padding: const EdgeInsets.all(16.0),
                             physics: NeverScrollableScrollPhysics(),
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 4,
-                              crossAxisSpacing: 5.0,
-                              mainAxisSpacing: 10.0,
+                              crossAxisSpacing: 25,
+                              mainAxisSpacing: 20,
                               childAspectRatio: 1,
                             ),
                             itemCount: buttonLabels[pageIndex].length,
@@ -435,13 +439,18 @@ class _HomeScreenState extends State<HomeScreen> {
                               log('data[color]  ${data['color']} ${context.read<ScoreProvider>().matchDetails['RedOpp']}}');
                               return ScoreButton(
                                 isRecording: widget.isRecording,
-                                period: context.read<ScoreProvider>().currentPeriod,
+                                period:
+                                    context.read<ScoreProvider>().currentPeriod,
                                 score: data['score'],
                                 description: data['description'],
                                 color: data['color'],
                                 player: data['color'] == Colors.red
-                                    ? context.read<ScoreProvider>().matchDetails['RedOpp']
-                                    : context.read<ScoreProvider>().matchDetails['GreenOpp'],
+                                    ? context
+                                        .read<ScoreProvider>()
+                                        .matchDetails['RedOpp']
+                                    : context
+                                        .read<ScoreProvider>()
+                                        .matchDetails['GreenOpp'],
                                 isOpaque: widget.isOpaque,
                                 onScoreTap: widget.onScoreTap,
                               );
@@ -464,7 +473,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               return GridView.builder(
                                 padding: const EdgeInsets.all(16.0),
                                 physics: NeverScrollableScrollPhysics(),
-                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
                                   crossAxisSpacing: 20,
                                   mainAxisSpacing: 10.0,
@@ -476,13 +486,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                   log('data[color]  ${data['color']} ${context.read<ScoreProvider>().matchDetails['RedOpp']}}');
                                   return ScoreButton(
                                     isRecording: widget.isRecording,
-                                    period: context.read<ScoreProvider>().currentPeriod,
+                                    period: context
+                                        .read<ScoreProvider>()
+                                        .currentPeriod,
                                     score: data['score'],
                                     description: data['description'],
                                     color: data['color'],
                                     player: data['color'] == Colors.red
-                                        ? context.read<ScoreProvider>().matchDetails['RedOpp']
-                                        : context.read<ScoreProvider>().matchDetails['GreenOpp'],
+                                        ? context
+                                            .read<ScoreProvider>()
+                                            .matchDetails['RedOpp']
+                                        : context
+                                            .read<ScoreProvider>()
+                                            .matchDetails['GreenOpp'],
                                     isOpaque: widget.isOpaque,
                                     onScoreTap: widget.onScoreTap,
                                   );
@@ -501,7 +517,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               return GridView.builder(
                                 padding: const EdgeInsets.all(16.0),
                                 physics: NeverScrollableScrollPhysics(),
-                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
                                   crossAxisSpacing: 20,
                                   mainAxisSpacing: 10.0,
@@ -509,17 +526,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 itemCount: greenButtons[pageIndex].length,
                                 itemBuilder: (context, buttonIndex) {
-                                  var data = greenButtons[pageIndex][buttonIndex];
+                                  var data =
+                                      greenButtons[pageIndex][buttonIndex];
                                   log('data[color]  ${data['color']} ${context.read<ScoreProvider>().matchDetails['RedOpp']}}');
                                   return ScoreButton(
                                     isRecording: widget.isRecording,
-                                    period: context.read<ScoreProvider>().currentPeriod,
+                                    period: context
+                                        .read<ScoreProvider>()
+                                        .currentPeriod,
                                     score: data['score'],
                                     description: data['description'],
                                     color: data['color'],
                                     player: data['color'] == Colors.red
-                                        ? context.read<ScoreProvider>().matchDetails['RedOpp']
-                                        : context.read<ScoreProvider>().matchDetails['GreenOpp'],
+                                        ? context
+                                            .read<ScoreProvider>()
+                                            .matchDetails['RedOpp']
+                                        : context
+                                            .read<ScoreProvider>()
+                                            .matchDetails['GreenOpp'],
                                     isOpaque: widget.isOpaque,
                                     onScoreTap: widget.onScoreTap,
                                   );
@@ -583,8 +607,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildScoreRow(BuildContext context, String opponentKey, Color backgroundColor,
-      int totalScore, String scoreDescriptions, ScoreProvider scoreProvider) {
+  Widget _buildScoreRow(
+      BuildContext context,
+      String opponentKey,
+      Color backgroundColor,
+      int totalScore,
+      String scoreDescriptions,
+      ScoreProvider scoreProvider) {
     return Row(
       children: [
         InkWell(
@@ -622,7 +651,9 @@ class _HomeScreenState extends State<HomeScreen> {
             alignment: Alignment.centerLeft,
             child: Text(
               '${scoreProvider.matchDetails[opponentKey]}',
-              style: TextStyle(color: Colors.black54, fontSize: getResponsiveFontSize(context, 14)),
+              style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: getResponsiveFontSize(context, 14)),
             ),
           ),
         ),
@@ -634,7 +665,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         InkWell(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (_) => ScoreDisplayScreen()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (_) => ScoreDisplayScreen()));
             // Navigator.push(context, MaterialPageRoute(builder: (_) => ScoreListPage()));
           },
           child: Container(
@@ -648,7 +680,8 @@ class _HomeScreenState extends State<HomeScreen> {
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: getResponsiveFontSize(context, 12), // Adjust the font size as needed
+                fontSize: getResponsiveFontSize(
+                    context, 12), // Adjust the font size as needed
               ),
             ),
           ),
@@ -678,7 +711,9 @@ class _HomeScreenState extends State<HomeScreen> {
             color: backgroundColor.withOpacity(0.9),
             child: Text(
               '$totalScore',
-              style: TextStyle(color: Colors.black, fontSize: getResponsiveFontSize(context, 14)),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: getResponsiveFontSize(context, 14)),
               textAlign: TextAlign.center,
             ),
           ),

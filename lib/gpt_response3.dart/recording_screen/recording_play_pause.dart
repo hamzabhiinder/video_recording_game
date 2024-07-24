@@ -65,7 +65,8 @@ class RecordingControls extends StatelessWidget {
                   if (videoPath.isNotEmpty) {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => VideoPlayerPage(filePath: videoPath),
+                        builder: (context) =>
+                            VideoPlayerPage(filePath: videoPath),
                       ),
                     );
                   }
@@ -101,9 +102,11 @@ class RecordingControls extends StatelessWidget {
                     }
                   },
                   icon: Icon(
-                    isRecording ? (isPaused ? Icons.play_arrow : Icons.pause) : Icons.circle,
+                    isRecording
+                        ? (isPaused ? Icons.play_arrow : Icons.pause)
+                        : Icons.circle,
                     color: Colors.white, // Icon color white
-                    size: 50,
+                    size: 30,
                   ),
                 ),
               ),
@@ -120,7 +123,8 @@ class RecordingControls extends StatelessWidget {
                   }
                   showEndMatchDialog();
                 },
-                child: Center(child: DiamondIcon(size: 30, color: Colors.white)),
+                child:
+                    Center(child: DiamondIcon(size: 30, color: Colors.white)),
               ),
             ],
           ),

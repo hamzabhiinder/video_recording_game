@@ -127,7 +127,8 @@ class ScoreDisplayScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    final bool isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
 
     return isPortrait
         ? SizedBox(
@@ -143,7 +144,8 @@ class ScoreDisplayScreen extends StatelessWidget {
                     builder: (context, scoreProvider, child) {
                       return ListView(
                         shrinkWrap: true,
-                        children: _buildPeriodScores(context, scoreProvider, Colors.red),
+                        children: _buildPeriodScores(
+                            context, scoreProvider, Colors.red),
                       );
                     },
                   ),
@@ -155,9 +157,9 @@ class ScoreDisplayScreen extends StatelessWidget {
                   child: Consumer<ScoreProvider>(
                     builder: (context, scoreProvider, child) {
                       return ListView(
-                        reverse: true,
                         shrinkWrap: true,
-                        children: _buildPeriodScores(context, scoreProvider, Colors.green),
+                        children: _buildPeriodScores(
+                            context, scoreProvider, Colors.green),
                       );
                     },
                   ),
@@ -179,7 +181,8 @@ class ScoreDisplayScreen extends StatelessWidget {
                     builder: (context, scoreProvider, child) {
                       return ListView(
                         shrinkWrap: true,
-                        children: _buildPeriodScores(context, scoreProvider, Colors.red),
+                        children: _buildPeriodScores(
+                            context, scoreProvider, Colors.red),
                       );
                     },
                   ),
@@ -191,7 +194,8 @@ class ScoreDisplayScreen extends StatelessWidget {
                     builder: (context, scoreProvider, child) {
                       return ListView(
                         shrinkWrap: true,
-                        children: _buildPeriodScores(context, scoreProvider, Colors.green),
+                        children: _buildPeriodScores(
+                            context, scoreProvider, Colors.green),
                       );
                     },
                   ),
@@ -204,7 +208,8 @@ class ScoreDisplayScreen extends StatelessWidget {
           );
   }
 
-  List<Widget> _buildPeriodScores(BuildContext context, ScoreProvider scoreProvider, Color color) {
+  List<Widget> _buildPeriodScores(
+      BuildContext context, ScoreProvider scoreProvider, Color color) {
     // Group scores by period
     final periodMap = <int, List<Score>>{};
     for (var score in scoreProvider.scores.where((s) => s.color == color)) {
@@ -243,7 +248,9 @@ class ScoreDisplayScreen extends StatelessWidget {
                       child: Text(
                         score.description,
                         style: TextStyle(
-                            color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -268,6 +275,6 @@ class ScoreDisplayScreen extends StatelessWidget {
       );
     });
 
-    return periodWidgets.reversed.toList();
+    return periodWidgets;
   }
 }

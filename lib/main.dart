@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:camera_recording_game/gpt_response3.dart/match_DAO.dart';
 import 'package:camera_recording_game/gpt_response3.dart/match_input_Screen.dart';
 import 'package:camera_recording_game/gpt_response3.dart/models/combile_model.dart';
+import 'package:camera_recording_game/gpt_response3.dart/recording_screen/score_dislplay.dart';
 import 'package:camera_recording_game/gpt_response3.dart/resonsive_helper.dart';
 import 'package:camera_recording_game/gpt_response3.dart/stopWathch/match_list_screen.dart';
 import 'package:camera_recording_game/gpt_response3.dart/stopWathch/stopwatch_provider.dart';
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
         title: 'Record and Score App',
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          useMaterial3: true,
         ),
         home: MatchInputScreen());
   }
@@ -202,13 +204,15 @@ class _RecordScreenState extends State<RecordScreen> {
                   child: Text('Save'),
                   onPressed: () {
                     if (selectedDecision != null) {
-                      Navigator.pushAndRemoveUntil(context,
-                          MaterialPageRoute(builder: (_) => MatchInputScreen()), (route) => false);
-                      Provider.of<ScoreProvider>(context, listen: false).endMatch(
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (_) => MatchInputScreen()),
+                          (route) => false);
+                      Provider.of<ScoreProvider>(context, listen: false)
+                          .endMatch(
                         selectedDecision!,
-                        context
-                            .read<StopwatchProvider>()
-                            .formatDuration(context.read<StopwatchProvider>().elapsedTime),
+                        context.read<StopwatchProvider>().formatDuration(
+                            context.read<StopwatchProvider>().elapsedTime),
                         reason,
                       );
 
@@ -222,7 +226,8 @@ class _RecordScreenState extends State<RecordScreen> {
                   child: Text('Exit'),
                   onPressed: () {
                     Navigator.of(context).pop(); // Close the End Match dialog
-                    _showExitConfirmationDialog(context); // Show the confirmation dialog
+                    _showExitConfirmationDialog(
+                        context); // Show the confirmation dialog
                   },
                 ),
               ],
@@ -253,11 +258,14 @@ class _RecordScreenState extends State<RecordScreen> {
                 if (videoPath.isNotEmpty) {
                   deleteVideoFile(videoPath);
                 }
-                Provider.of<ScoreProvider>(context, listen: false).resetMatchState();
+                Provider.of<ScoreProvider>(context, listen: false)
+                    .resetMatchState();
                 context.read<StopwatchProvider>().resetStopwatch();
 
-                Navigator.pushAndRemoveUntil(context,
-                    MaterialPageRoute(builder: (_) => MatchInputScreen()), (route) => false);
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (_) => MatchInputScreen()),
+                    (route) => false);
               },
               child: Text('Exit'),
             ),
@@ -302,7 +310,8 @@ class _RecordScreenState extends State<RecordScreen> {
 
       // Save score data
       final scoreProvider = context.read<ScoreProvider>();
-      final scoreData = scoreProvider.scores.map((score) => score.toMap()).toList();
+      final scoreData =
+          scoreProvider.scores.map((score) => score.toMap()).toList();
       final scoreFilePath = '${videoDir.path}/$uniqueID.json';
       final scoreFile = File(scoreFilePath);
       await scoreFile.writeAsString(jsonEncode(scoreData));
@@ -386,7 +395,8 @@ class _RecordScreenState extends State<RecordScreen> {
   @override
   Widget build(BuildContext context) {
     final matchDetails = Provider.of<ScoreProvider>(context).matchDetails;
-    final bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    final bool isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
     return Scaffold(
       backgroundColor: Colors.black,
       body: FutureBuilder<void>(
@@ -399,6 +409,19 @@ class _RecordScreenState extends State<RecordScreen> {
                     child: AspectRatio(
                         aspectRatio: 1 / _controller.value.aspectRatio,
                         child: CameraPreview(_controller))),
+                HomeScreen(
+                  isRecording: isRecording,
+                  onStopRecording: () {
+                    stopRecording(context);
+                  },
+                  isOpaque: isOpaque,
+                  onScoreTap: () {
+                    setState(() {
+                      isOpaque = true;
+                    });
+                    _startOpacityTimer();
+                  },
+                ),
                 HeaderCameraScoreWidget(
                   isOpaque: isOpaque,
                   onScoreTap: () {
@@ -410,7 +433,7 @@ class _RecordScreenState extends State<RecordScreen> {
                 ),
                 isPortrait
                     ? Positioned(
-                        top: MediaQuery.of(context).size.height * 0.6,
+                        bottom: 200,
                         left: 0,
                         right: 0,
                         child: RecordingControls(
@@ -421,7 +444,8 @@ class _RecordScreenState extends State<RecordScreen> {
                           pauseRecording: () => pauseRecording(context),
                           resumeRecording: () => resumeRecording(context),
                           stopRecording: () => stopRecording(context),
-                          showEndMatchDialog: () => _showEndMatchDialog(context),
+                          showEndMatchDialog: () =>
+                              _showEndMatchDialog(context),
                         ),
                       )
                     : Positioned(
@@ -436,7 +460,8 @@ class _RecordScreenState extends State<RecordScreen> {
                           pauseRecording: () => pauseRecording(context),
                           resumeRecording: () => resumeRecording(context),
                           stopRecording: () => stopRecording(context),
-                          showEndMatchDialog: () => _showEndMatchDialog(context),
+                          showEndMatchDialog: () =>
+                              _showEndMatchDialog(context),
                         ),
                       ),
                 // // Play And Pause Button
@@ -636,19 +661,19 @@ class _RecordScreenState extends State<RecordScreen> {
                 //         ),
                 //       ),
 
-                HomeScreen(
-                  isRecording: isRecording,
-                  onStopRecording: () {
-                    stopRecording(context);
-                  },
-                  isOpaque: isOpaque,
-                  onScoreTap: () {
-                    setState(() {
-                      isOpaque = true;
-                    });
-                    _startOpacityTimer();
-                  },
-                )
+                // HomeScreen(
+                //   isRecording: isRecording,
+                //   onStopRecording: () {
+                //     stopRecording(context);
+                //   },
+                //   isOpaque: isOpaque,
+                //   onScoreTap: () {
+                //     setState(() {
+                //       isOpaque = true;
+                //     });
+                //     _startOpacityTimer();
+                //   },
+                // ),
               ],
             );
           } else {
@@ -687,13 +712,21 @@ class ScoreButton extends StatelessWidget {
       onPressed: isRecording
           ? () async {
               context.read<StopwatchProvider>().lapStopwatch();
-              String lapTime = context.read<StopwatchProvider>().lapTimeStringData;
+              String lapTime =
+                  context.read<StopwatchProvider>().lapTimeStringData;
               List<ScoreModel> scpreModel = await matchDAO.getScores();
-              var sc = scpreModel.where((element) => element.score == description);
+              var sc =
+                  scpreModel.where((element) => element.score == description);
               onScoreTap();
               log("ONTAP WORJGING ${lapTime}  ${sc.first.scoreID} ${sc.first.points} ONTAP WORJGING ${sc.first.score}");
-              Provider.of<ScoreProvider>(context, listen: false)
-                  .addScore(score, description, player, period, color, sc.first.scoreID, lapTime);
+              Provider.of<ScoreProvider>(context, listen: false).addScore(
+                  score,
+                  description,
+                  player,
+                  period,
+                  color,
+                  sc.first.scoreID,
+                  lapTime);
 
               context.read<StopwatchProvider>().lapStopwatch();
               log('printing $description');
@@ -705,7 +738,7 @@ class ScoreButton extends StatelessWidget {
       ),
       child: Text(
         description,
-        style: TextStyle(fontSize: 20, color: Colors.black54),
+        style: TextStyle(fontSize: 19, color: Colors.white),
         maxLines: 1,
       ),
     );
