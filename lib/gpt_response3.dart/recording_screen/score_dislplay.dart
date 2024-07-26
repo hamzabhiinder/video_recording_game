@@ -98,6 +98,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ScoreDisplayScreen extends StatelessWidget {
+  final ScrollController _scrollController = ScrollController();
   // void _showDeleteConfirmationDialog(BuildContext context, Score score) {
   //   showDialog(
   //     context: context,
@@ -186,6 +187,7 @@ class ScoreDisplayScreen extends StatelessWidget {
                   child: Consumer<ScoreProvider>(
                     builder: (context, scoreProvider, child) {
                       return ListView(
+                        controller: _scrollController,
                         shrinkWrap: true,
                         children: _buildPeriodScores(
                             context, scoreProvider, Colors.red),
@@ -299,19 +301,6 @@ class ScoreDisplayScreen extends StatelessWidget {
                     ),
                   ),
                 )
-
-                // ListTile(
-                //       title: Text(
-                //         score.description,
-                //         style: TextStyle(color: Colors.blue),
-                //       ),
-                //       trailing: IconButton(
-                //         icon: Icon(Icons.delete, color: Colors.blue),
-                //         onPressed: () {
-                //           scoreProvider.deleteScore(score.matchScoreID);
-                //         },
-                //       ),
-                //     ))
                 .toList(),
           ],
         ),
@@ -320,7 +309,4 @@ class ScoreDisplayScreen extends StatelessWidget {
 
     return periodWidgets;
   }
-
-
-
- }
+}

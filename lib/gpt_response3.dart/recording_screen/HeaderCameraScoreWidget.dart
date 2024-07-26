@@ -43,103 +43,103 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                     // First Container: Red Team Score and Name
                     Expanded(
                       child: Container(
-                        color: Colors.red,
-                        child: Center(
-                          child: Consumer<ScoreProvider>(
-                            builder: (context, scoreProvider, child) {
-                              String redName =
-                                  scoreProvider.matchDetails['RedOpp'];
-                              redName = redName.length > 4
-                                  ? redName.substring(0, 4)
-                                  : redName;
-                              return Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Align(
-                                      alignment: Alignment.topRight,
-                                      child: Container(
-                                        height: getResponsiveWidth(context, 25),
-                                        width: getResponsiveWidth(context, 25),
-                                        color: Colors.black,
-                                        child: Center(
-                                          child: PositionLabel(
-                                            backgroundColor: Colors.black,
-                                            onPositionChange: (newPosition) {
-                                              // Handle position change
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(8),
+                                bottomLeft: Radius.circular(8))),
+                        child: Consumer<ScoreProvider>(
+                          builder: (context, scoreProvider, child) {
+                            String redName =
+                                scoreProvider.matchDetails['RedOpp'];
+                            redName = redName.length > 4
+                                ? redName.substring(0, 4)
+                                : redName;
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: Container(
+                                    margin: EdgeInsets.only(right: 5),
+                                    height: getResponsiveWidth(context, 25),
+                                    width: getResponsiveWidth(context, 25),
+                                    color: Colors.black,
+                                    child: Center(
+                                      child: PositionLabel(
+                                        backgroundColor: Colors.black,
+                                        onPositionChange: (newPosition) {
+                                          // Handle position change
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  '${scoreProvider.totalScore1}',
+                                  style: TextStyle(
+                                    fontSize: 36,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    // height: 0.9,
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        String newName = scoreProvider
+                                            .matchDetails['RedOpp'];
+                                        return AlertDialog(
+                                          title: Text('Update Opponent Name'),
+                                          content: TextField(
+                                            decoration: InputDecoration(
+                                                hintText: newName),
+                                            onChanged: (value) {
+                                              newName = value;
+                                              scoreProvider.updateMatchDetail(
+                                                  'RedOpp', value);
                                             },
                                           ),
-                                        ),
-                                      ),
-                                    ),
-                                    Text(
-                                      '${scoreProvider.totalScore1}',
-                                      style: TextStyle(
-                                        fontSize: 32,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            String newName = scoreProvider
-                                                .matchDetails['RedOpp'];
-                                            return AlertDialog(
-                                              title:
-                                                  Text('Update Opponent Name'),
-                                              content: TextField(
-                                                decoration: InputDecoration(
-                                                    hintText: newName),
-                                                onChanged: (value) {
-                                                  newName = value;
-                                                  scoreProvider
-                                                      .updateMatchDetail(
-                                                          'RedOpp', value);
-                                                },
-                                              ),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  child: Text('Save'),
-                                                  onPressed: () {
-                                                    // scoreProvider.matchDetails
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                              ],
-                                            );
-                                          },
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: Text('Save'),
+                                              onPressed: () {
+                                                // scoreProvider.matchDetails
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
                                         );
                                       },
-                                      child: Text(
-                                        '${redName}',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.white,
-                                        ),
-                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    '${redName}',
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      color: Colors.white,
+                                      height: 0.9,
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              );
-                            },
-                          ),
+                              ],
+                            );
+                          },
                         ),
                       ),
                     ),
                     // Second Container: Time and Period
                     Expanded(
                       child: Container(
-                        height: getResponsiveHeight(context, 125),
                         color: Colors.grey.shade800,
                         child: Center(
                           child: Consumer<StopwatchProvider>(
                             builder: (context, stopwatchProvider, child) {
                               return Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Consumer<ScoreProvider>(
                                       builder: (context, scoreProvider, child) {
@@ -174,7 +174,8 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                                     color: Colors.white,
                                                     fontSize:
                                                         getResponsiveFontSize(
-                                                            context, 24)),
+                                                            context, 20),
+                                                    height: 1.9),
                                               ),
                                             ),
                                           );
@@ -182,6 +183,7 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                       ),
                                     );
                                   }),
+                                  SizedBox(height: 0), // Remove gap
                                   // Text(
                                   //   'Period: ${context.read<ScoreProvider>().currentPeriod}',
                                   //   style: TextStyle(
@@ -193,11 +195,11 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                   Text(
                                     '${stopwatchProvider.formatDuration(stopwatchProvider.elapsedTime)}',
                                     style: TextStyle(
-                                      fontSize: getResponsiveFontSize(
-                                          context, 36), // Increased font size
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                        fontSize: getResponsiveFontSize(
+                                            context, 36), // Increased font size
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        height: 0.8),
                                   ),
                                 ],
                               );
@@ -209,7 +211,11 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                     // Third Container: Green Team Score and Name
                     Expanded(
                       child: Container(
-                        color: Colors.green,
+                        decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(8),
+                                bottomRight: Radius.circular(8))),
                         child: Center(
                           child: Consumer<ScoreProvider>(
                             builder: (context, scoreProvider, child) {
@@ -242,9 +248,9 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                     Text(
                                       '${scoreProvider.totalScore2}',
                                       style: TextStyle(
-                                        fontSize: 32,
-                                        color: Colors.white,
+                                        fontSize: 36,
                                         fontWeight: FontWeight.bold,
+                                        color: Colors.white,
                                       ),
                                     ),
                                     GestureDetector(
@@ -283,7 +289,8 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                       child: Text(
                                         '${greenName}',
                                         style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 22,
+                                          height: 0.9,
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
                                         ),

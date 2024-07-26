@@ -48,20 +48,22 @@ class StopwatchProvider with ChangeNotifier {
       final totalTimeString = formatDuration(currentTime);
       lapTimeStringData = lapTimeString;
       log('Lap  $lapTimeString');
-      _laps.add('Lap ${_laps.length + 1}: $lapTimeString (Total: $totalTimeString)');
+      _laps.add(
+          'Lap ${_laps.length + 1}: $lapTimeString (Total: $totalTimeString)');
       notifyListeners();
     }
   }
 
   String formatDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
-    String threeDigits(int n) => n.toString().padLeft(3, '0');
     String hours = twoDigits(duration.inHours);
     String minutes = twoDigits(duration.inMinutes.remainder(60));
     String seconds = twoDigits(duration.inSeconds.remainder(60));
-    String milliseconds = twoDigits(duration.inMilliseconds.remainder(1000));
+    String milliseconds = (duration.inMilliseconds.remainder(1000) ~/ 10)
+        .toString()
+        .padLeft(2, '0');
     if (duration.inHours > 0) {
-      return "$hours:$minutes:$seconds.$milliseconds";
+      return "$hours:$minutes:$seconds";
     } else if (duration.inMinutes > 0) {
       return "$minutes:$seconds";
     } else {

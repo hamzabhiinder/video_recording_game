@@ -62,7 +62,9 @@ class RecordingControls extends StatelessWidget {
                 ),
                 backgroundColor: Colors.black26, // Lighter shade
                 onPressed: () {
-                  if (videoPath.isNotEmpty) {
+                  if (isRecording && videoPath.isNotEmpty) {
+                    stopRecording();
+                  } else if (!isRecording) {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) =>

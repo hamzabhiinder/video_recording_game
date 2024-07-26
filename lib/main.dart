@@ -105,7 +105,7 @@ class _RecordScreenState extends State<RecordScreen> {
 
   void changePeriod(BuildContext context) {
     if (isRecording) {
-      stopRecording(context);
+      stopRecording(context: context);
     } else {
       Navigator.of(context).push(
         MaterialPageRoute(
@@ -289,7 +289,8 @@ class _RecordScreenState extends State<RecordScreen> {
     }
   }
 
-  Future<void> stopRecording(BuildContext context) async {
+  Future<void> stopRecording(
+      {required BuildContext context, bool? isVideoPlayBackScreen}) async {
     try {
       final XFile videoFile = await _controller.stopVideoRecording();
       context.read<StopwatchProvider>().stopStopwatch();
@@ -338,12 +339,13 @@ class _RecordScreenState extends State<RecordScreen> {
       // Save video to gallery
       final bool? isSaved = await GallerySaver.saveVideo(videoPath);
       log('Video saved to gallery: $isSaved');
-
-      // Navigator.of(context).push(
-      //   MaterialPageRoute(
-      //     builder: (context) => ResultScreen(videoPath: videoPath),
-      //   ),
-      // );
+      if (isVideoPlayBackScreen ?? false) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => VideoPlayerPage(filePath: videoPath),
+          ),
+        );
+      }
     } catch (e, stackTrace) {
       setState(() {
         isRecording = false;
@@ -432,7 +434,7 @@ class _RecordScreenState extends State<RecordScreen> {
                 HomeScreen(
                   isRecording: isRecording,
                   onStopRecording: () {
-                    stopRecording(context);
+                    stopRecording(context: context);
                   },
                   isOpaque: isOpaque,
                   onScoreTap: () {
@@ -464,7 +466,8 @@ class _RecordScreenState extends State<RecordScreen> {
                           startRecording: () => startRecording(context),
                           pauseRecording: () => pauseRecording(context),
                           resumeRecording: () => resumeRecording(context),
-                          stopRecording: () => stopRecording(context),
+                          stopRecording: () => stopRecording(
+                              context: context, isVideoPlayBackScreen: true),
                           showEndMatchDialog: () =>
                               _showEndMatchDialog(context),
                         ),
@@ -480,7 +483,8 @@ class _RecordScreenState extends State<RecordScreen> {
                           startRecording: () => startRecording(context),
                           pauseRecording: () => pauseRecording(context),
                           resumeRecording: () => resumeRecording(context),
-                          stopRecording: () => stopRecording(context),
+                          stopRecording: () => stopRecording(
+                              context: context, isVideoPlayBackScreen: true),
                           showEndMatchDialog: () =>
                               _showEndMatchDialog(context),
                         ),
