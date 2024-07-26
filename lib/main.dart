@@ -56,13 +56,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Record and Score App',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          useMaterial3: true,
-        ),
-        home: MatchInputScreen());
+      debugShowCheckedModeBanner: false,
+      title: 'Record and Score App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+      ),
+      home: //Scaffold(body: BoxingTimerWidget())
+          MatchInputScreen(),
+    );
   }
 }
 
@@ -312,9 +314,19 @@ class _RecordScreenState extends State<RecordScreen> {
       final scoreProvider = context.read<ScoreProvider>();
       final scoreData =
           scoreProvider.scores.map((score) => score.toMap()).toList();
+      final redPlayerName =
+          scoreProvider.matchDetails['RedOpp']; // Add this in your provider
+      final greenPlayerName =
+          scoreProvider.matchDetails['GreenOpp']; // Add this in your provider
+      final timestamp = DateTime.now();
+      final matchData = {
+        'scores': scoreData,
+        'redPlayerName': redPlayerName ?? '',
+        'greenPlayerName': greenPlayerName ?? '',
+      };
       final scoreFilePath = '${videoDir.path}/$uniqueID.json';
       final scoreFile = File(scoreFilePath);
-      await scoreFile.writeAsString(jsonEncode(scoreData));
+      await scoreFile.writeAsString(jsonEncode(matchData));
 
       setState(() {
         this.videoPath = videoPath;
@@ -392,6 +404,14 @@ class _RecordScreenState extends State<RecordScreen> {
     });
   }
 
+  void _handleHeaderTap() {
+    setState(() {
+      isOpaque = true;
+    });
+
+    log('DAATA ');
+  }
+
   @override
   Widget build(BuildContext context) {
     final matchDetails = Provider.of<ScoreProvider>(context).matchDetails;
@@ -430,6 +450,7 @@ class _RecordScreenState extends State<RecordScreen> {
                     });
                     _startOpacityTimer();
                   },
+                  onHeaderTap: _handleHeaderTap,
                 ),
                 isPortrait
                     ? Positioned(

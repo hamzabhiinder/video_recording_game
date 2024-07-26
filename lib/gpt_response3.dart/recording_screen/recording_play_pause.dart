@@ -84,7 +84,11 @@ class RecordingControls extends StatelessWidget {
                 height: 80,
                 width: 80,
                 decoration: BoxDecoration(
-                  color: Colors.black26, // Lighter shade
+                  color: isRecording
+                      ? (isPaused
+                          ? Colors.transparent
+                          : Colors.red.withOpacity(0.6))
+                      : Colors.black26, // Lighter shade
 
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 2),
@@ -101,13 +105,18 @@ class RecordingControls extends StatelessWidget {
                       startRecording();
                     }
                   },
-                  icon: Icon(
-                    isRecording
-                        ? (isPaused ? Icons.play_arrow : Icons.pause)
-                        : Icons.circle,
-                    color: Colors.white, // Icon color white
-                    size: 30,
-                  ),
+                  icon: isRecording
+                      ? (isPaused
+                          ? Icon(Icons.stop, color: Colors.red, size: 30)
+                          : Icon(Icons.circle, color: Colors.white, size: 30))
+                      : Icon(Icons.circle, color: Colors.white, size: 30),
+                  // Icon(
+                  //     isRecording
+                  //         ? (isPaused ? Icons.play_arrow : Icons.pause)
+                  //         : Icons.circle,
+                  //     color: Colors.white, // Icon color white
+                  //     size: 30,
+                  //   ),
                 ),
               ),
               const SizedBox(width: 20),

@@ -98,13 +98,56 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ScoreDisplayScreen extends StatelessWidget {
+  // void _showDeleteConfirmationDialog(BuildContext context, Score score) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text('Delete Confirmation'),
+  //         content: Text('Are you sure you want to delete this score?'),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             child: Text('Delete'),
+  //             onPressed: () {
+  //               context.read<ScoreProvider>().deleteScore(score.matchScoreID);
+  //               Navigator.of(context).pop();
+  //             },
+  //           ),
+  //           TextButton(
+  //             child: Text('Cancel'),
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+
   void _showDeleteConfirmationDialog(BuildContext context, Score score) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Delete Confirmation'),
-          content: Text('Are you sure you want to delete this score?'),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Are you sure you want to delete the below score?'),
+              SizedBox(height: 8.0),
+              Text('Period: ${score.period}',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('Name: ${score.scorer}',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(
+                  'Color: ${score.color.value.toString() == "4283215696" ? "Green" : "Red"}',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('ScoreLine: ${score.description}',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+            ],
+          ),
           actions: <Widget>[
             TextButton(
               child: Text('Delete'),
@@ -277,4 +320,7 @@ class ScoreDisplayScreen extends StatelessWidget {
 
     return periodWidgets;
   }
-}
+
+
+
+ }

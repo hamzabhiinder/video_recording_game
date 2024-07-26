@@ -14,7 +14,8 @@ class VideoPlayerPage extends StatefulWidget {
   final String filePath;
   final String? scoreFilePath;
 
-  const VideoPlayerPage({Key? key, required this.filePath, this.scoreFilePath}) : super(key: key);
+  const VideoPlayerPage({Key? key, required this.filePath, this.scoreFilePath})
+      : super(key: key);
 
   @override
   _VideoPlayerPageState createState() => _VideoPlayerPageState();
@@ -33,15 +34,40 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     _loadScores();
   }
 
-  Future<void> deleteVideoFile(String videoPath) async {
+  // Future<void> deleteVideoFile(String videoPath) async {
+  //   try {
+  //     final file = File(videoPath);
+  //     if (await file.exists()) {
+  //       await file.delete();
+  //       debugPrint('Deleted video file: $videoPath');
+  //     }
+  //     setState(() {});
+  //   } catch (e) {
+  //     debugPrint('Error deleting video file: $e');
+  //   }
+  // }
+
+  Future<void> deleteVideoFile(String videoPath, String? scoreFilePath) async {
     try {
-      final file = File(videoPath);
-      if (await file.exists()) {
-        await file.delete();
+      // Delete the video file
+      final videoFile = File(videoPath);
+      if (await videoFile.exists()) {
+        await videoFile.delete();
         debugPrint('Deleted video file: $videoPath');
       }
+
+      // Delete the JSON file
+      if (scoreFilePath != null) {
+        final scoreFile = File(scoreFilePath);
+        if (await scoreFile.exists()) {
+          await scoreFile.delete();
+          debugPrint('Deleted score file: $scoreFilePath');
+        }
+      }
+
+      setState(() {});
     } catch (e) {
-      debugPrint('Error deleting video file: $e');
+      debugPrint('Error deleting files: $e');
     }
   }
 
@@ -63,10 +89,14 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     if (widget.scoreFilePath != null) {
       final scoreFile = File(widget.scoreFilePath!);
       final scoreData = await scoreFile.readAsString();
-      final List<dynamic> scoreList = jsonDecode(scoreData);
+      final scoreList = jsonDecode(scoreData);
 
       setState(() {
-        _scores = scoreList.map((data) => Score.fromMap(data)).toList();
+        _scores = (scoreList['scores'] as List)
+            .map((data) => Score.fromMap(data))
+            .toList();
+        // _scores =
+        //     scoreList['scores'].map((data) => Score.fromMap(data)).toList();
       });
       log("_scores  ${_scores.toList()}");
     }
@@ -133,17 +163,19 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                   child: Text('Save'),
                   onPressed: () {
                     if (selectedDecision != null) {
-                      Provider.of<ScoreProvider>(context, listen: false).endMatch(
+                      Provider.of<ScoreProvider>(context, listen: false)
+                          .endMatch(
                         selectedDecision!,
-                        context
-                            .read<StopwatchProvider>()
-                            .formatDuration(context.read<StopwatchProvider>().elapsedTime),
+                        context.read<StopwatchProvider>().formatDuration(
+                            context.read<StopwatchProvider>().elapsedTime),
                         reason,
                       );
 
                       context.read<StopwatchProvider>().resetStopwatch();
-                      Navigator.pushAndRemoveUntil(context,
-                          MaterialPageRoute(builder: (_) => MatchInputScreen()), (route) => false);
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (_) => MatchInputScreen()),
+                          (route) => false);
                     } else {
                       // Show error message or handle invalid input
                     }
@@ -153,7 +185,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                   child: Text('Exit'),
                   onPressed: () {
                     Navigator.of(context).pop(); // Close the End Match dialog
-                    _showExitConfirmationDialog(context); // Show the confirmation dialog
+                    _showExitConfirmationDialog(
+                        context); // Show the confirmation dialog
                   },
                 ),
               ],
@@ -179,16 +212,18 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
               child: Text('Cancel'),
             ),
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the confirmation dialog
+              onPressed: () async {
                 if (widget.filePath.isNotEmpty) {
-                  deleteVideoFile(widget.filePath);
+                  await deleteVideoFile(widget.filePath, widget.scoreFilePath);
                 }
-                Provider.of<ScoreProvider>(context, listen: false).resetMatchState();
+                Provider.of<ScoreProvider>(context, listen: false)
+                    .resetMatchState();
                 context.read<StopwatchProvider>().resetStopwatch();
 
-                Navigator.pushAndRemoveUntil(context,
-                    MaterialPageRoute(builder: (_) => MatchInputScreen()), (route) => false);
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (_) => MatchInputScreen()),
+                    (route) => false);
               },
               child: Text('Exit'),
             ),
@@ -228,8 +263,10 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       if (await scoreFile.exists()) {
         await scoreFile.delete();
       }
-
-      Navigator.of(context).pop();
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => MatchInputScreen()),
+          (route) => false);
     }
   }
 
@@ -237,6 +274,17 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              widget.scoreFilePath == null
+                  ? Navigator.pop(context)
+                  : Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MatchInputScreen()),
+                      (route) => false);
+            },
+            icon: Icon(Icons.arrow_back_ios)),
         title: Text('Video Playback'),
         actions: [
           widget.scoreFilePath == null
@@ -253,7 +301,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
           children: [
             Center(
               child: _chewieController != null &&
-                      _chewieController!.videoPlayerController.value.isInitialized
+                      _chewieController!
+                          .videoPlayerController.value.isInitialized
                   ? AspectRatio(
                       aspectRatio: _chewieController!.aspectRatio!,
                       child: Chewie(
@@ -277,7 +326,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                                       return Text(
                                         '${score.description}  at ${score.time} - ${score.scorer}',
                                         style: TextStyle(
-                                          color: score.color.value == Colors.red.value
+                                          color: score.color.value ==
+                                                  Colors.red.value
                                               ? Colors.red
                                               : Colors.green,
                                           fontSize: 16,
@@ -288,8 +338,9 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                                       return Text(
                                         '${score.description}  at ${score.time} - ${score.scorer}',
                                         style: TextStyle(
-                                          color:
-                                              score.color == Colors.red ? Colors.red : Colors.green,
+                                          color: score.color == Colors.red
+                                              ? Colors.red
+                                              : Colors.green,
                                           fontSize: 16,
                                         ),
                                       );
@@ -301,15 +352,18 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                               : Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
                                     children: [
                                       Text(
                                         'Red Scorer:${scoreProvider.totalScore1}',
-                                        style: const TextStyle(color: Colors.red, fontSize: 20),
+                                        style: const TextStyle(
+                                            color: Colors.red, fontSize: 20),
                                       ),
                                       Text(
                                         'Green Scorer: ${scoreProvider.totalScore2}',
-                                        style: const TextStyle(color: Colors.green, fontSize: 20),
+                                        style: const TextStyle(
+                                            color: Colors.green, fontSize: 20),
                                       ),
                                     ],
                                   ),
