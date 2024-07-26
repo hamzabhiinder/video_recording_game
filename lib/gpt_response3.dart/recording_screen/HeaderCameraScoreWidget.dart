@@ -33,7 +33,7 @@ class HeaderCameraScoreWidget extends StatelessWidget {
             top: 50,
             left: 0,
             right: 0,
-            height: 125, // Total height for three containers
+            height: 110, // Total height for three containers
             child: Opacity(
               opacity: isOpaque ? 1.0 : 0.5,
               child: GestureDetector(
@@ -209,7 +209,6 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                     // Third Container: Green Team Score and Name
                     Expanded(
                       child: Container(
-                        height: getResponsiveHeight(context, 125),
                         color: Colors.green,
                         child: Center(
                           child: Consumer<ScoreProvider>(
@@ -222,12 +221,13 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                               return Padding(
                                 padding: const EdgeInsets.all(5.0),
                                 child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Align(
                                       alignment: Alignment.topLeft,
                                       child: Container(
-                                        height: getResponsiveWidth(context, 30),
-                                        width: getResponsiveWidth(context, 30),
+                                        height: getResponsiveWidth(context, 25),
+                                        width: getResponsiveWidth(context, 25),
                                         color: Colors.black,
                                         child: Center(
                                           child: PositionLabel(
@@ -239,14 +239,12 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    FittedBox(
-                                      child: Text(
-                                        '${scoreProvider.totalScore2}',
-                                        style: TextStyle(
-                                          fontSize: 40,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                    Text(
+                                      '${scoreProvider.totalScore2}',
+                                      style: TextStyle(
+                                        fontSize: 32,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     GestureDetector(
@@ -285,7 +283,7 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                       child: Text(
                                         '${greenName}',
                                         style: TextStyle(
-                                          fontSize: 26,
+                                          fontSize: 16,
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
                                         ),
