@@ -60,7 +60,7 @@ class _MatchListScreenState extends State<MatchListScreen> {
             'date': matchDate,
           });
         }
-      }
+      }         
     }
     matches.sort((a, b) => b['date']!.compareTo(a['date']!));
     return matches;
