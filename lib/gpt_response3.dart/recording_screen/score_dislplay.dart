@@ -1,93 +1,3 @@
-// import 'dart:developer';
-
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-
-// import '../score_provider.dart';
-
-// class ScoreDisplayScreen extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Score Display'),
-//       ),
-//       body: Row(
-//         children: [
-//           Expanded(
-//             child: Column(
-//               children: [
-//                 Text(
-//                   'Red Team',
-//                   style: TextStyle(
-//                     fontSize: 20,
-//                     color: Colors.red,
-//                     fontWeight: FontWeight.bold,
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: Consumer<ScoreProvider>(
-//                     builder: (context, scoreProvider, child) {
-//                       return ListView(
-//                         children: scoreProvider.scores
-//                             .where((score) => score.color == Colors.red)
-//                             .map((score) => ListTile(
-//                                   title: Text(score.description),
-//                                   trailing: IconButton(
-//                                     icon: Icon(Icons.delete),
-//                                     onPressed: () {
-//                                       log('score.matchScoreID  ${score.matchScoreID}');
-//                                       scoreProvider.deleteScore(score.matchScoreID);
-//                                     },
-//                                   ),
-//                                 ))
-//                             .toList(),
-//                       );
-//                     },
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//           Expanded(
-//             child: Column(
-//               children: [
-//                 Text(
-//                   'Green Team',
-//                   style: TextStyle(
-//                     fontSize: 20,
-//                     color: Colors.green,
-//                     fontWeight: FontWeight.bold,
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: Consumer<ScoreProvider>(
-//                     builder: (context, scoreProvider, child) {
-//                       return ListView(
-//                         children: scoreProvider.scores
-//                             .where((score) => score.color == Colors.green)
-//                             .map((score) => ListTile(
-//                                   title: Text(score.description),
-//                                   trailing: IconButton(
-//                                     icon: Icon(Icons.delete),
-//                                     onPressed: () {
-//                                       scoreProvider.deleteScore(score.matchScoreID);
-//                                     },
-//                                   ),
-//                                 ))
-//                             .toList(),
-//                       );
-//                     },
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 import 'package:camera_recording_game/gpt_response3.dart/resonsive_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -99,6 +9,7 @@ import 'package:provider/provider.dart';
 
 class ScoreDisplayScreen extends StatelessWidget {
   final ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollGreenController = ScrollController();
   // void _showDeleteConfirmationDialog(BuildContext context, Score score) {
   //   showDialog(
   //     context: context,
@@ -131,34 +42,31 @@ class ScoreDisplayScreen extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Delete Confirmation'),
+          title: const Text('Delete Confirmation'),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Are you sure you want to delete the below score?'),
-              SizedBox(height: 8.0),
-              Text('Period: ${score.period}',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              Text('Name: ${score.scorer}',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              Text(
-                  'Color: ${score.color.value.toString() == "4283215696" ? "Green" : "Red"}',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text('Are you sure you want to delete the below score?'),
+              const SizedBox(height: 8.0),
+              Text('Period: ${score.period}', style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text('Name: ${score.scorer}', style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text('Color: ${score.color.value.toString() == "4283215696" ? "Green" : "Red"}',
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
               Text('ScoreLine: ${score.description}',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
             ],
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Delete'),
+              child: const Text('Delete'),
               onPressed: () {
                 context.read<ScoreProvider>().deleteScore(score.matchScoreID);
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -171,8 +79,7 @@ class ScoreDisplayScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isPortrait =
-        MediaQuery.of(context).orientation == Orientation.portrait;
+    final bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
     return isPortrait
         ? SizedBox(
@@ -186,11 +93,14 @@ class ScoreDisplayScreen extends StatelessWidget {
                   width: 50,
                   child: Consumer<ScoreProvider>(
                     builder: (context, scoreProvider, child) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+                      });
                       return ListView(
                         controller: _scrollController,
                         shrinkWrap: true,
-                        children: _buildPeriodScores(
-                            context, scoreProvider, Colors.red),
+                        reverse: true,
+                        children: _buildPeriodScores(context, scoreProvider, Colors.red),
                       );
                     },
                   ),
@@ -201,10 +111,15 @@ class ScoreDisplayScreen extends StatelessWidget {
                   width: 50,
                   child: Consumer<ScoreProvider>(
                     builder: (context, scoreProvider, child) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _scrollGreenController
+                            .jumpTo(_scrollGreenController.position.maxScrollExtent);
+                      });
                       return ListView(
+                        controller: _scrollGreenController,
+                        reverse: true,
                         shrinkWrap: true,
-                        children: _buildPeriodScores(
-                            context, scoreProvider, Colors.green),
+                        children: _buildPeriodScores(context, scoreProvider, Colors.green),
                       );
                     },
                   ),
@@ -217,7 +132,7 @@ class ScoreDisplayScreen extends StatelessWidget {
             child: Row(
               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 130,
                 ),
                 SizedBox(
@@ -226,26 +141,24 @@ class ScoreDisplayScreen extends StatelessWidget {
                     builder: (context, scoreProvider, child) {
                       return ListView(
                         shrinkWrap: true,
-                        children: _buildPeriodScores(
-                            context, scoreProvider, Colors.red),
+                        children: _buildPeriodScores(context, scoreProvider, Colors.red),
                       );
                     },
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 SizedBox(
                   width: 50,
                   child: Consumer<ScoreProvider>(
                     builder: (context, scoreProvider, child) {
                       return ListView(
                         shrinkWrap: true,
-                        children: _buildPeriodScores(
-                            context, scoreProvider, Colors.green),
+                        children: _buildPeriodScores(context, scoreProvider, Colors.green),
                       );
                     },
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 120,
                 ),
               ],
@@ -253,8 +166,7 @@ class ScoreDisplayScreen extends StatelessWidget {
           );
   }
 
-  List<Widget> _buildPeriodScores(
-      BuildContext context, ScoreProvider scoreProvider, Color color) {
+  List<Widget> _buildPeriodScores(BuildContext context, ScoreProvider scoreProvider, Color color) {
     // Group scores by period
     final periodMap = <int, List<Score>>{};
     for (var score in scoreProvider.scores.where((s) => s.color == color)) {
@@ -270,17 +182,17 @@ class ScoreDisplayScreen extends StatelessWidget {
           children: [
             Container(
               color: Colors.black,
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Text(
                 'P$period',
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            ...scores
+            ...scores.reversed
                 .map(
                   (score) => GestureDetector(
                     onTap: () {
@@ -289,13 +201,11 @@ class ScoreDisplayScreen extends StatelessWidget {
                     },
                     child: Container(
                       // color: color.withOpacity(0.7),
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Text(
                         score.description,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
                     ),

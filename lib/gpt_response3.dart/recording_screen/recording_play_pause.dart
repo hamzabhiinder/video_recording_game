@@ -33,6 +33,7 @@ class RecordingControls extends StatelessWidget {
   final VoidCallback resumeRecording;
   final VoidCallback stopRecording;
   final VoidCallback showEndMatchDialog;
+  final VoidCallback changePeriod;
   final double iconSize;
 
   const RecordingControls({
@@ -44,7 +45,7 @@ class RecordingControls extends StatelessWidget {
     required this.resumeRecording,
     required this.stopRecording,
     required this.showEndMatchDialog,
-    this.iconSize = 50.0,
+    this.iconSize = 50.0, required this.changePeriod,
   });
 
   @override
@@ -62,16 +63,9 @@ class RecordingControls extends StatelessWidget {
                 ),
                 backgroundColor: Colors.black26, // Lighter shade
                 onPressed: () {
-                  if (isRecording && videoPath.isNotEmpty) {
-                    stopRecording();
-                  } else if (!isRecording) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            VideoPlayerPage(filePath: videoPath),
-                      ),
-                    );
-                  }
+                changePeriod();
+
+                  
                 },
                 child: Center(
                   child: Icon(

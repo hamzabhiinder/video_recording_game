@@ -92,7 +92,7 @@ class _MatchInputScreenState extends State<MatchInputScreen> {
       Provider.of<ScoreProvider>(context, listen: false).setMatchDetails(matchDetails);
       matchDAO.insertMatch(match);
 
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => RecordScreen(camera: firstCamera)),
       );
