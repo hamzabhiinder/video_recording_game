@@ -49,9 +49,12 @@ class ScoreDisplayScreen extends StatelessWidget {
             children: [
               const Text('Are you sure you want to delete the below score?'),
               const SizedBox(height: 8.0),
-              Text('Period: ${score.period}', style: const TextStyle(fontWeight: FontWeight.bold)),
-              Text('Name: ${score.scorer}', style: const TextStyle(fontWeight: FontWeight.bold)),
-              Text('Color: ${score.color.value.toString() == "4283215696" ? "Green" : "Red"}',
+              Text('Period: ${score.period}',
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text('Name: ${score.scorer}',
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(
+                  'Color: ${score.color.value.toString() == "4283215696" ? "Green" : "Red"}',
                   style: const TextStyle(fontWeight: FontWeight.bold)),
               Text('ScoreLine: ${score.description}',
                   style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -79,11 +82,12 @@ class ScoreDisplayScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    final bool isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
 
     return isPortrait
         ? SizedBox(
-            height: MediaQuery.of(context).size.height * 0.55,
+            height: MediaQuery.of(context).size.height * 0.5,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -94,13 +98,15 @@ class ScoreDisplayScreen extends StatelessWidget {
                   child: Consumer<ScoreProvider>(
                     builder: (context, scoreProvider, child) {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
-                        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+                        _scrollController
+                            .jumpTo(_scrollController.position.maxScrollExtent);
                       });
                       return ListView(
                         controller: _scrollController,
                         shrinkWrap: true,
                         reverse: true,
-                        children: _buildPeriodScores(context, scoreProvider, Colors.red),
+                        children: _buildPeriodScores(
+                            context, scoreProvider, Colors.red),
                       );
                     },
                   ),
@@ -112,14 +118,15 @@ class ScoreDisplayScreen extends StatelessWidget {
                   child: Consumer<ScoreProvider>(
                     builder: (context, scoreProvider, child) {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
-                        _scrollGreenController
-                            .jumpTo(_scrollGreenController.position.maxScrollExtent);
+                        _scrollGreenController.jumpTo(
+                            _scrollGreenController.position.maxScrollExtent);
                       });
                       return ListView(
                         controller: _scrollGreenController,
                         reverse: true,
                         shrinkWrap: true,
-                        children: _buildPeriodScores(context, scoreProvider, Colors.green),
+                        children: _buildPeriodScores(
+                            context, scoreProvider, Colors.green),
                       );
                     },
                   ),
@@ -128,32 +135,50 @@ class ScoreDisplayScreen extends StatelessWidget {
             ),
           )
         : SizedBox(
-            height: MediaQuery.of(context).size.height * 0.55,
+            height: MediaQuery.of(context).size.height * 0.5,
             child: Row(
               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const SizedBox(
                   width: 130,
                 ),
-                SizedBox(
+                Container(
+                  alignment: Alignment.center,
+                  color: Colors.red.withOpacity(0.3),
                   width: 50,
                   child: Consumer<ScoreProvider>(
                     builder: (context, scoreProvider, child) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _scrollController
+                            .jumpTo(_scrollController.position.maxScrollExtent);
+                      });
                       return ListView(
+                        controller: _scrollController,
                         shrinkWrap: true,
-                        children: _buildPeriodScores(context, scoreProvider, Colors.red),
+                        reverse: true,
+                        children: _buildPeriodScores(
+                            context, scoreProvider, Colors.red),
                       );
                     },
                   ),
                 ),
                 const Spacer(),
-                SizedBox(
+                Container(
+                  alignment: Alignment.center,
+                  color: Colors.green.withOpacity(0.3),
                   width: 50,
                   child: Consumer<ScoreProvider>(
                     builder: (context, scoreProvider, child) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _scrollGreenController.jumpTo(
+                            _scrollGreenController.position.maxScrollExtent);
+                      });
                       return ListView(
                         shrinkWrap: true,
-                        children: _buildPeriodScores(context, scoreProvider, Colors.green),
+                        controller: _scrollGreenController,
+                        reverse: true,
+                        children: _buildPeriodScores(
+                            context, scoreProvider, Colors.green),
                       );
                     },
                   ),
@@ -166,7 +191,8 @@ class ScoreDisplayScreen extends StatelessWidget {
           );
   }
 
-  List<Widget> _buildPeriodScores(BuildContext context, ScoreProvider scoreProvider, Color color) {
+  List<Widget> _buildPeriodScores(
+      BuildContext context, ScoreProvider scoreProvider, Color color) {
     // Group scores by period
     final periodMap = <int, List<Score>>{};
     for (var score in scoreProvider.scores.where((s) => s.color == color)) {
@@ -205,7 +231,9 @@ class ScoreDisplayScreen extends StatelessWidget {
                       child: Text(
                         score.description,
                         style: const TextStyle(
-                            color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
                     ),

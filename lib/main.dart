@@ -106,7 +106,10 @@ class _RecordScreenState extends State<RecordScreen> {
   void changePeriod(BuildContext context) {
     if (isRecording && videoPath.isNotEmpty) {
       stopRecording(context: context, isVideoPlayBackScreen: true);
+      isRecording = false;
     } else if (!isRecording) {
+      isRecording = false;
+
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => VideoPlayerPage(filePath: videoPath),
@@ -206,13 +209,15 @@ class _RecordScreenState extends State<RecordScreen> {
                   child: Text('Save'),
                   onPressed: () {
                     if (selectedDecision != null) {
-                      Navigator.pushAndRemoveUntil(context,
-                          MaterialPageRoute(builder: (_) => MatchInputScreen()), (route) => false);
-                      Provider.of<ScoreProvider>(context, listen: false).endMatch(
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (_) => MatchInputScreen()),
+                          (route) => false);
+                      Provider.of<ScoreProvider>(context, listen: false)
+                          .endMatch(
                         selectedDecision!,
-                        context
-                            .read<StopwatchProvider>()
-                            .formatDuration(context.read<StopwatchProvider>().elapsedTime),
+                        context.read<StopwatchProvider>().formatDuration(
+                            context.read<StopwatchProvider>().elapsedTime),
                         reason,
                       );
 
@@ -226,7 +231,8 @@ class _RecordScreenState extends State<RecordScreen> {
                   child: Text('Exit'),
                   onPressed: () {
                     Navigator.of(context).pop(); // Close the End Match dialog
-                    _showExitConfirmationDialog(context); // Show the confirmation dialog
+                    _showExitConfirmationDialog(
+                        context); // Show the confirmation dialog
                   },
                 ),
               ],
@@ -257,11 +263,14 @@ class _RecordScreenState extends State<RecordScreen> {
                 if (videoPath.isNotEmpty) {
                   deleteVideoFile(videoPath);
                 }
-                Provider.of<ScoreProvider>(context, listen: false).resetMatchState();
+                Provider.of<ScoreProvider>(context, listen: false)
+                    .resetMatchState();
                 context.read<StopwatchProvider>().resetStopwatch();
 
-                Navigator.pushAndRemoveUntil(context,
-                    MaterialPageRoute(builder: (_) => MatchInputScreen()), (route) => false);
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (_) => MatchInputScreen()),
+                    (route) => false);
               },
               child: Text('Exit'),
             ),
@@ -283,7 +292,8 @@ class _RecordScreenState extends State<RecordScreen> {
     }
   }
 
-  Future<void> stopRecording({required BuildContext context, bool? isVideoPlayBackScreen}) async {
+  Future<void> stopRecording(
+      {required BuildContext context, bool? isVideoPlayBackScreen}) async {
     try {
       final XFile videoFile = await _controller.stopVideoRecording();
       context.read<StopwatchProvider>().stopStopwatch();
@@ -306,9 +316,12 @@ class _RecordScreenState extends State<RecordScreen> {
 
       // Save score data
       final scoreProvider = context.read<ScoreProvider>();
-      final scoreData = scoreProvider.scores.map((score) => score.toMap()).toList();
-      final redPlayerName = scoreProvider.matchDetails['RedOpp']; // Add this in your provider
-      final greenPlayerName = scoreProvider.matchDetails['GreenOpp']; // Add this in your provider
+      final scoreData =
+          scoreProvider.scores.map((score) => score.toMap()).toList();
+      final redPlayerName =
+          scoreProvider.matchDetails['RedOpp']; // Add this in your provider
+      final greenPlayerName =
+          scoreProvider.matchDetails['GreenOpp']; // Add this in your provider
       final timestamp = DateTime.now();
       final matchData = {
         'scores': scoreData,
@@ -407,7 +420,8 @@ class _RecordScreenState extends State<RecordScreen> {
   @override
   Widget build(BuildContext context) {
     final matchDetails = Provider.of<ScoreProvider>(context).matchDetails;
-    final bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    final bool isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
     return Scaffold(
       backgroundColor: Colors.black,
       body: FutureBuilder<void>(
@@ -456,7 +470,8 @@ class _RecordScreenState extends State<RecordScreen> {
                           pauseRecording: () => pauseRecording(context),
                           resumeRecording: () => resumeRecording(context),
                           stopRecording: () => stopRecording(context: context),
-                          showEndMatchDialog: () => _showEndMatchDialog(context),
+                          showEndMatchDialog: () =>
+                              _showEndMatchDialog(context),
                           changePeriod: () => changePeriod(context),
                         ),
                       )
@@ -472,7 +487,8 @@ class _RecordScreenState extends State<RecordScreen> {
                           pauseRecording: () => pauseRecording(context),
                           resumeRecording: () => resumeRecording(context),
                           stopRecording: () => stopRecording(context: context),
-                          showEndMatchDialog: () => _showEndMatchDialog(context),
+                          showEndMatchDialog: () =>
+                              _showEndMatchDialog(context),
                           changePeriod: () => changePeriod(context),
                         ),
                       ),
@@ -724,13 +740,21 @@ class ScoreButton extends StatelessWidget {
       onPressed: isRecording
           ? () async {
               context.read<StopwatchProvider>().lapStopwatch();
-              String lapTime = context.read<StopwatchProvider>().lapTimeStringData;
+              String lapTime =
+                  context.read<StopwatchProvider>().lapTimeStringData;
               List<ScoreModel> scpreModel = await matchDAO.getScores();
-              var sc = scpreModel.where((element) => element.score == description);
+              var sc =
+                  scpreModel.where((element) => element.score == description);
               onScoreTap();
               log("ONTAP WORJGING ${lapTime}  ${sc.first.scoreID} ${sc.first.points} ONTAP WORJGING ${sc.first.score}");
-              Provider.of<ScoreProvider>(context, listen: false)
-                  .addScore(score, description, player, period, color, sc.first.scoreID, lapTime);
+              Provider.of<ScoreProvider>(context, listen: false).addScore(
+                  score,
+                  description,
+                  player,
+                  period,
+                  color,
+                  sc.first.scoreID,
+                  lapTime);
 
               context.read<StopwatchProvider>().lapStopwatch();
               log('printing $description');
@@ -742,7 +766,7 @@ class ScoreButton extends StatelessWidget {
       ),
       child: Text(
         description,
-        style: TextStyle(fontSize: 19, color: Colors.white),
+        style: TextStyle(fontSize: 15, color: Colors.white),
         maxLines: 1,
       ),
     );

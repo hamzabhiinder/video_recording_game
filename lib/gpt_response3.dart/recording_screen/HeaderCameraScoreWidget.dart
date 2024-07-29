@@ -30,7 +30,7 @@ class HeaderCameraScoreWidget extends StatelessWidget {
 
     return isPortrait
         ? Positioned(
-            top: 50,
+            top: MediaQuery.of(context).size.height * 0.08,
             left: 0,
             right: 0,
             height: 110, // Total height for three containers
@@ -43,7 +43,7 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                     // First Container: Red Team Score and Name
                     Expanded(
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                             color: Colors.red,
                             borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(8),
@@ -57,11 +57,12 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                 : redName;
                             return Column(
                               mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Align(
                                   alignment: Alignment.topRight,
                                   child: Container(
-                                    margin: EdgeInsets.only(right: 5),
+                                    margin: const EdgeInsets.only(right: 5),
                                     height: getResponsiveWidth(context, 25),
                                     width: getResponsiveWidth(context, 25),
                                     color: Colors.black,
@@ -75,13 +76,16 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                Text(
-                                  '${scoreProvider.totalScore1}',
-                                  style: TextStyle(
-                                    fontSize: 36,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    // height: 0.9,
+                                FittedBox(
+                                  child: Text(
+                                    '${scoreProvider.totalScore1}',
+                                    style: TextStyle(
+                                      fontSize:
+                                          getResponsiveFontSize(context, 29),
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      height: 1,
+                                    ),
                                   ),
                                 ),
                                 GestureDetector(
@@ -92,7 +96,8 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                         String newName = scoreProvider
                                             .matchDetails['RedOpp'];
                                         return AlertDialog(
-                                          title: Text('Update Opponent Name'),
+                                          title: const Text(
+                                              'Update Opponent Name'),
                                           content: TextField(
                                             decoration: InputDecoration(
                                                 hintText: newName),
@@ -104,7 +109,7 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                           ),
                                           actions: <Widget>[
                                             TextButton(
-                                              child: Text('Save'),
+                                              child: const Text('Save'),
                                               onPressed: () {
                                                 // scoreProvider.matchDetails
                                                 Navigator.of(context).pop();
@@ -115,12 +120,16 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                       },
                                     );
                                   },
-                                  child: Text(
-                                    '${redName}',
-                                    style: TextStyle(
-                                      fontSize: 22,
-                                      color: Colors.white,
-                                      height: 0.9,
+                                  child: FittedBox(
+                                    child: Text(
+                                      '${redName}',
+                                      style: TextStyle(
+                                        fontSize:
+                                            getResponsiveFontSize(context, 22),
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        height: 1,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -174,7 +183,7 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                                     color: Colors.white,
                                                     fontSize:
                                                         getResponsiveFontSize(
-                                                            context, 20),
+                                                            context, 18),
                                                     height: 1.9),
                                               ),
                                             ),
@@ -183,7 +192,7 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                       ),
                                     );
                                   }),
-                                  SizedBox(height: 0), // Remove gap
+                                  const SizedBox(height: 0), // Remove gap
                                   // Text(
                                   //   'Period: ${context.read<ScoreProvider>().currentPeriod}',
                                   //   style: TextStyle(
@@ -196,7 +205,7 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                     '${stopwatchProvider.formatDuration(stopwatchProvider.elapsedTime)}',
                                     style: TextStyle(
                                         fontSize: getResponsiveFontSize(
-                                            context, 36), // Increased font size
+                                            context, 30), // Increased font size
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
                                         height: 0.8),
@@ -211,7 +220,7 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                     // Third Container: Green Team Score and Name
                     Expanded(
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                             color: Colors.green,
                             borderRadius: BorderRadius.only(
                                 topRight: Radius.circular(8),
@@ -245,12 +254,15 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    Text(
-                                      '${scoreProvider.totalScore2}',
-                                      style: TextStyle(
-                                        fontSize: 36,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                                    FittedBox(
+                                      child: Text(
+                                        '${scoreProvider.totalScore2}',
+                                        style: TextStyle(
+                                            fontSize: getResponsiveFontSize(
+                                                context, 29),
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                            height: 01),
                                       ),
                                     ),
                                     GestureDetector(
@@ -261,8 +273,8 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                             String newName = scoreProvider
                                                 .matchDetails['GreenOpp'];
                                             return AlertDialog(
-                                              title:
-                                                  Text('Update Opponent Name'),
+                                              title: const Text(
+                                                  'Update Opponent Name'),
                                               content: TextField(
                                                 decoration: InputDecoration(
                                                     hintText: newName),
@@ -275,7 +287,7 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                               ),
                                               actions: <Widget>[
                                                 TextButton(
-                                                  child: Text('Save'),
+                                                  child: const Text('Save'),
                                                   onPressed: () {
                                                     // scoreProvider.matchDetails
                                                     Navigator.of(context).pop();
@@ -286,13 +298,16 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                           },
                                         );
                                       },
-                                      child: Text(
-                                        '${greenName}',
-                                        style: TextStyle(
-                                          fontSize: 22,
-                                          height: 0.9,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
+                                      child: FittedBox(
+                                        child: Text(
+                                          '${greenName}',
+                                          style: TextStyle(
+                                            fontSize: getResponsiveFontSize(
+                                                context, 22),
+                                            height: 1,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -313,7 +328,7 @@ class HeaderCameraScoreWidget extends StatelessWidget {
             top: 5,
             left: 0,
             right: 0,
-            height: 150, // Total height for three containers
+            // height: 150, // Total height for three containers
             child: Opacity(
               opacity: isOpaque ? 1.0 : 0.5,
               child: Row(
@@ -321,87 +336,89 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                 children: [
                   // First Container: Red Team Score and Name
                   Container(
-                    height: 110,
+                    //   height: 110,
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                     width: 125,
-                    color: Colors.red,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color: Colors.red,
+                    ),
                     child: Center(
                       child: Consumer<ScoreProvider>(
                         builder: (context, scoreProvider, child) {
                           return Padding(
                             padding: const EdgeInsets.all(5.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Column(
-                                  children: [
-                                    FittedBox(
-                                      child: Text(
-                                        '${scoreProvider.totalScore1}',
-                                        style: TextStyle(
-                                          fontSize: 28,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: Container(
+                                    height: 25,
+                                    width: 25,
+                                    color: Colors.black,
+                                    child: Center(
+                                      child: PositionLabel(
+                                        backgroundColor: Colors.black,
+                                        onPositionChange: (newPosition) {
+                                          // Handle position change
+                                        },
                                       ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            String newName = scoreProvider
-                                                .matchDetails['RedOpp'];
-                                            return AlertDialog(
-                                              title:
-                                                  Text('Update Opponent Name'),
-                                              content: TextField(
-                                                decoration: InputDecoration(
-                                                    hintText: newName),
-                                                onChanged: (value) {
-                                                  newName = value;
-                                                  scoreProvider
-                                                      .updateMatchDetail(
-                                                          'RedOpp', value);
-                                                },
-                                              ),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  child: Text('Save'),
-                                                  onPressed: () {
-                                                    // scoreProvider.matchDetails
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      },
-                                      child: Text(
-                                        '${scoreProvider.matchDetails['RedOpp']}',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  height: 30,
-                                  width: 30,
-                                  color: Colors.black,
-                                  child: Center(
-                                    child: PositionLabel(
-                                      backgroundColor: Colors.black,
-                                      onPositionChange: (newPosition) {
-                                        // Handle position change
-                                      },
                                     ),
                                   ),
-                                )
+                                ),
+                                FittedBox(
+                                  child: Text(
+                                    '${scoreProvider.totalScore2}',
+                                    style: const TextStyle(
+                                        fontSize: 28,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        height: 1),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        String newName = scoreProvider
+                                            .matchDetails['RedOpp'];
+                                        return AlertDialog(
+                                          title: const Text(
+                                              'Update Opponent Name'),
+                                          content: TextField(
+                                            decoration: InputDecoration(
+                                                hintText: newName),
+                                            onChanged: (value) {
+                                              newName = value;
+                                              scoreProvider.updateMatchDetail(
+                                                  'RedOpp', value);
+                                            },
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('Save'),
+                                              onPressed: () {
+                                                // scoreProvider.matchDetails
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Text(
+                                    '${scoreProvider.matchDetails['RedOpp']}',
+                                    style: const TextStyle(
+                                        fontSize: 22,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        height: 1),
+                                  ),
+                                ),
                               ],
                             ),
                           );
@@ -409,7 +426,8 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 50),
+
+                  const SizedBox(width: 50),
                   // Second Container: Time and Period
                   Expanded(
                     child: Container(
@@ -471,7 +489,7 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                                 // ),
                                 Text(
                                   '${stopwatchProvider.formatDuration(stopwatchProvider.elapsedTime)}',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 21,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -484,92 +502,93 @@ class HeaderCameraScoreWidget extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 50),
+                  const SizedBox(width: 50),
 
                   // Third Container: Green Team Score and Name
                   Container(
-                    height: 110,
+                    //   height: 110,
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                     width: 125,
-                    color: Colors.green,
+
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      color: Colors.green,
+                    ),
                     child: Center(
                       child: Consumer<ScoreProvider>(
                         builder: (context, scoreProvider, child) {
                           return Padding(
                             padding: const EdgeInsets.all(5.0),
-                            child: Row(
-                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Container(
-                                  height: 30,
-                                  width: 30,
-                                  color: Colors.black,
-                                  child: Center(
-                                    child: PositionLabel(
-                                      backgroundColor: Colors.black,
-                                      onPositionChange: (newPosition) {
-                                        // Handle position change
-                                      },
+                                Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Container(
+                                    height: 25,
+                                    width: 25,
+                                    color: Colors.black,
+                                    child: Center(
+                                      child: PositionLabel(
+                                        backgroundColor: Colors.black,
+                                        onPositionChange: (newPosition) {
+                                          // Handle position change
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 20),
-                                Column(
-                                  children: [
-                                    SizedBox(height: 25),
-                                    FittedBox(
-                                      child: Text(
-                                        '${scoreProvider.totalScore2}',
-                                        style: TextStyle(
-                                          fontSize: 32,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            String newName = scoreProvider
-                                                .matchDetails['GreenOpp'];
-                                            return AlertDialog(
-                                              title:
-                                                  Text('Update Opponent Name'),
-                                              content: TextField(
-                                                decoration: InputDecoration(
-                                                    hintText: newName),
-                                                onChanged: (value) {
-                                                  newName = value;
-                                                  scoreProvider
-                                                      .updateMatchDetail(
-                                                          'GreenOpp', value);
-                                                },
-                                              ),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  child: Text('Save'),
-                                                  onPressed: () {
-                                                    // scoreProvider.matchDetails
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                              ],
-                                            );
-                                          },
+                                FittedBox(
+                                  child: Text(
+                                    '${scoreProvider.totalScore2}',
+                                    style: const TextStyle(
+                                        fontSize: 28,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        height: 1),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        String newName = scoreProvider
+                                            .matchDetails['GreenOpp'];
+                                        return AlertDialog(
+                                          title: const Text(
+                                              'Update Opponent Name'),
+                                          content: TextField(
+                                            decoration: InputDecoration(
+                                                hintText: newName),
+                                            onChanged: (value) {
+                                              newName = value;
+                                              scoreProvider.updateMatchDetail(
+                                                  'GreenOpp', value);
+                                            },
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('Save'),
+                                              onPressed: () {
+                                                // scoreProvider.matchDetails
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
                                         );
                                       },
-                                      child: Text(
-                                        '${scoreProvider.matchDetails['GreenOpp']}',
-                                        style: TextStyle(
-                                          fontSize: 24,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                    );
+                                  },
+                                  child: Text(
+                                    '${scoreProvider.matchDetails['GreenOpp']}',
+                                    style: const TextStyle(
+                                        fontSize: 22,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        height: 1),
+                                  ),
                                 ),
                               ],
                             ),
@@ -597,7 +616,7 @@ class PositionLabel extends StatefulWidget {
 }
 
 class _PositionLabelState extends State<PositionLabel> {
-  String position = 'N'; // Initial position
+  String position = ''; // Initial position
 
   @override
   Widget build(BuildContext context) {
@@ -610,7 +629,7 @@ class _PositionLabelState extends State<PositionLabel> {
         alignment: Alignment.center,
         child: Text(
           position,
-          style: TextStyle(
+          style: const TextStyle(
               color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
@@ -623,7 +642,7 @@ class _PositionLabelState extends State<PositionLabel> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Change Position'),
+          title: const Text('Change Position'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -664,10 +683,10 @@ class BoxingTimerWidget extends StatelessWidget {
     return Container(
       width: double.infinity, // Make the widget as wide as possible
       height: 100, // Adjust height as needed
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.black, // Background color
       ),
-      child: Row(
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
