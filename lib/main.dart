@@ -56,13 +56,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Record and Score App',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          useMaterial3: true,
-        ),
-        home: MatchInputScreen());
+      debugShowCheckedModeBanner: false,
+      title: 'Record and Score App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+      ),
+      home: //Scaffold(body: BoxingTimerWidget())
+          MatchInputScreen(),
+    );
   }
 }
 
@@ -102,12 +104,15 @@ class _RecordScreenState extends State<RecordScreen> {
   }
 
   void changePeriod(BuildContext context) {
-    if (isRecording) {
-      stopRecording(context);
-    } else {
+    if (isRecording && videoPath.isNotEmpty) {
+      stopRecording(context: context, isVideoPlayBackScreen: true);
+      isRecording = false;
+    } else if (!isRecording) {
+      isRecording = false;
+
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => ResultScreen(videoPath: videoPath),
+          builder: (context) => VideoPlayerPage(filePath: videoPath),
         ),
       );
     }
@@ -287,7 +292,8 @@ class _RecordScreenState extends State<RecordScreen> {
     }
   }
 
-  Future<void> stopRecording(BuildContext context) async {
+  Future<void> stopRecording(
+      {required BuildContext context, bool? isVideoPlayBackScreen}) async {
     try {
       final XFile videoFile = await _controller.stopVideoRecording();
       context.read<StopwatchProvider>().stopStopwatch();
@@ -312,9 +318,19 @@ class _RecordScreenState extends State<RecordScreen> {
       final scoreProvider = context.read<ScoreProvider>();
       final scoreData =
           scoreProvider.scores.map((score) => score.toMap()).toList();
+      final redPlayerName =
+          scoreProvider.matchDetails['RedOpp']; // Add this in your provider
+      final greenPlayerName =
+          scoreProvider.matchDetails['GreenOpp']; // Add this in your provider
+      final timestamp = DateTime.now();
+      final matchData = {
+        'scores': scoreData,
+        'redPlayerName': redPlayerName ?? '',
+        'greenPlayerName': greenPlayerName ?? '',
+      };
       final scoreFilePath = '${videoDir.path}/$uniqueID.json';
       final scoreFile = File(scoreFilePath);
-      await scoreFile.writeAsString(jsonEncode(scoreData));
+      await scoreFile.writeAsString(jsonEncode(matchData));
 
       setState(() {
         this.videoPath = videoPath;
@@ -326,12 +342,13 @@ class _RecordScreenState extends State<RecordScreen> {
       // Save video to gallery
       final bool? isSaved = await GallerySaver.saveVideo(videoPath);
       log('Video saved to gallery: $isSaved');
-
-      // Navigator.of(context).push(
-      //   MaterialPageRoute(
-      //     builder: (context) => ResultScreen(videoPath: videoPath),
-      //   ),
-      // );
+      if (isVideoPlayBackScreen ?? false) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => VideoPlayerPage(filePath: videoPath),
+          ),
+        );
+      }
     } catch (e, stackTrace) {
       setState(() {
         isRecording = false;
@@ -392,6 +409,14 @@ class _RecordScreenState extends State<RecordScreen> {
     });
   }
 
+  void _handleHeaderTap() {
+    setState(() {
+      isOpaque = true;
+    });
+
+    log('DAATA ');
+  }
+
   @override
   Widget build(BuildContext context) {
     final matchDetails = Provider.of<ScoreProvider>(context).matchDetails;
@@ -412,7 +437,7 @@ class _RecordScreenState extends State<RecordScreen> {
                 HomeScreen(
                   isRecording: isRecording,
                   onStopRecording: () {
-                    stopRecording(context);
+                    stopRecording(context: context);
                   },
                   isOpaque: isOpaque,
                   onScoreTap: () {
@@ -430,6 +455,7 @@ class _RecordScreenState extends State<RecordScreen> {
                     });
                     _startOpacityTimer();
                   },
+                  onHeaderTap: _handleHeaderTap,
                 ),
                 isPortrait
                     ? Positioned(
@@ -443,9 +469,10 @@ class _RecordScreenState extends State<RecordScreen> {
                           startRecording: () => startRecording(context),
                           pauseRecording: () => pauseRecording(context),
                           resumeRecording: () => resumeRecording(context),
-                          stopRecording: () => stopRecording(context),
+                          stopRecording: () => stopRecording(context: context),
                           showEndMatchDialog: () =>
                               _showEndMatchDialog(context),
+                          changePeriod: () => changePeriod(context),
                         ),
                       )
                     : Positioned(
@@ -459,9 +486,10 @@ class _RecordScreenState extends State<RecordScreen> {
                           startRecording: () => startRecording(context),
                           pauseRecording: () => pauseRecording(context),
                           resumeRecording: () => resumeRecording(context),
-                          stopRecording: () => stopRecording(context),
+                          stopRecording: () => stopRecording(context: context),
                           showEndMatchDialog: () =>
                               _showEndMatchDialog(context),
+                          changePeriod: () => changePeriod(context),
                         ),
                       ),
                 // // Play And Pause Button
@@ -738,7 +766,7 @@ class ScoreButton extends StatelessWidget {
       ),
       child: Text(
         description,
-        style: TextStyle(fontSize: 19, color: Colors.white),
+        style: TextStyle(fontSize: 15, color: Colors.white),
         maxLines: 1,
       ),
     );

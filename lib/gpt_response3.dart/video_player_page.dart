@@ -33,15 +33,40 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     _loadScores();
   }
 
-  Future<void> deleteVideoFile(String videoPath) async {
+  // Future<void> deleteVideoFile(String videoPath) async {
+  //   try {
+  //     final file = File(videoPath);
+  //     if (await file.exists()) {
+  //       await file.delete();
+  //       debugPrint('Deleted video file: $videoPath');
+  //     }
+  //     setState(() {});
+  //   } catch (e) {
+  //     debugPrint('Error deleting video file: $e');
+  //   }
+  // }
+
+  Future<void> deleteVideoFile(String videoPath, String? scoreFilePath) async {
     try {
-      final file = File(videoPath);
-      if (await file.exists()) {
-        await file.delete();
+      // Delete the video file
+      final videoFile = File(videoPath);
+      if (await videoFile.exists()) {
+        await videoFile.delete();
         debugPrint('Deleted video file: $videoPath');
       }
+
+      // Delete the JSON file
+      if (scoreFilePath != null) {
+        final scoreFile = File(scoreFilePath);
+        if (await scoreFile.exists()) {
+          await scoreFile.delete();
+          debugPrint('Deleted score file: $scoreFilePath');
+        }
+      }
+
+      setState(() {});
     } catch (e) {
-      debugPrint('Error deleting video file: $e');
+      debugPrint('Error deleting files: $e');
     }
   }
 
@@ -63,10 +88,12 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     if (widget.scoreFilePath != null) {
       final scoreFile = File(widget.scoreFilePath!);
       final scoreData = await scoreFile.readAsString();
-      final List<dynamic> scoreList = jsonDecode(scoreData);
+      final scoreList = jsonDecode(scoreData);
 
       setState(() {
-        _scores = scoreList.map((data) => Score.fromMap(data)).toList();
+        _scores = (scoreList['scores'] as List).map((data) => Score.fromMap(data)).toList();
+        // _scores =
+        //     scoreList['scores'].map((data) => Score.fromMap(data)).toList();
       });
       log("_scores  ${_scores.toList()}");
     }
@@ -179,10 +206,9 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
               child: Text('Cancel'),
             ),
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the confirmation dialog
+              onPressed: () async {
                 if (widget.filePath.isNotEmpty) {
-                  deleteVideoFile(widget.filePath);
+                  await deleteVideoFile(widget.filePath, widget.scoreFilePath);
                 }
                 Provider.of<ScoreProvider>(context, listen: false).resetMatchState();
                 context.read<StopwatchProvider>().resetStopwatch();
@@ -228,8 +254,8 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
       if (await scoreFile.exists()) {
         await scoreFile.delete();
       }
-
-      Navigator.of(context).pop();
+      Navigator.pushAndRemoveUntil(
+          context, MaterialPageRoute(builder: (context) => MatchInputScreen()), (route) => false);
     }
   }
 
@@ -237,6 +263,16 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              widget.scoreFilePath == null
+                  ? Navigator.pop(context)
+                  : Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => MatchInputScreen()),
+                      (route) => false);
+            },
+            icon: Icon(Icons.arrow_back_ios)),
         title: Text('Video Playback'),
         actions: [
           widget.scoreFilePath == null
@@ -262,68 +298,65 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
                     )
                   : CircularProgressIndicator(),
             ),
-            widget.scoreFilePath != null
-                ? Container()
-                : Consumer<ScoreProvider>(
-                    builder: (context, scoreProvider, child) {
-                      return Column(
-                        children: [
-                          Padding(
+            Consumer<ScoreProvider>(
+              builder: (context, scoreProvider, child) {
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: widget.scoreFilePath != null
+                            ? _scores.map((score) {
+                                return Text(
+                                  '${score.description}  at ${score.time} - ${score.scorer}',
+                                  style: TextStyle(
+                                    color: score.color.value == Colors.red.value
+                                        ? Colors.red
+                                        : Colors.green,
+                                    fontSize: 16,
+                                  ),
+                                );
+                              }).toList()
+                            : scoreProvider.scores.map((score) {
+                                return Text(
+                                  '${score.description}  at ${score.time} - ${score.scorer}',
+                                  style: TextStyle(
+                                    color: score.color == Colors.red ? Colors.red : Colors.green,
+                                    fontSize: 16,
+                                  ),
+                                );
+                              }).toList(),
+                      ),
+                    ),
+                    widget.scoreFilePath != null
+                        ? Container()
+                        : Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: widget.scoreFilePath != null
-                                  ? _scores.map((score) {
-                                      return Text(
-                                        '${score.description}  at ${score.time} - ${score.scorer}',
-                                        style: TextStyle(
-                                          color: score.color.value == Colors.red.value
-                                              ? Colors.red
-                                              : Colors.green,
-                                          fontSize: 16,
-                                        ),
-                                      );
-                                    }).toList()
-                                  : scoreProvider.scores.map((score) {
-                                      return Text(
-                                        '${score.description}  at ${score.time} - ${score.scorer}',
-                                        style: TextStyle(
-                                          color:
-                                              score.color == Colors.red ? Colors.red : Colors.green,
-                                          fontSize: 16,
-                                        ),
-                                      );
-                                    }).toList(),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  'Red Scorer:${scoreProvider.totalScore1}',
+                                  style: const TextStyle(color: Colors.red, fontSize: 20),
+                                ),
+                                Text(
+                                  'Green Scorer: ${scoreProvider.totalScore2}',
+                                  style: const TextStyle(color: Colors.green, fontSize: 20),
+                                ),
+                              ],
                             ),
                           ),
-                          widget.scoreFilePath != null
-                              ? Container()
-                              : Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Text(
-                                        'Red Scorer:${scoreProvider.totalScore1}',
-                                        style: const TextStyle(color: Colors.red, fontSize: 20),
-                                      ),
-                                      Text(
-                                        'Green Scorer: ${scoreProvider.totalScore2}',
-                                        style: const TextStyle(color: Colors.green, fontSize: 20),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                          widget.scoreFilePath != null
-                              ? Container()
-                              : ElevatedButton(
-                                  onPressed: () => _showEndMatchDialog(context),
-                                  child: Text('End Match'),
-                                ),
-                        ],
-                      );
-                    },
-                  ),
+                    // widget.scoreFilePath != null
+                    //     ? Container()
+                    //     : ElevatedButton(
+                    //         onPressed: () => _showEndMatchDialog(context),
+                    //         child: Text('End Match'),
+                    //       ),
+                  ],
+                );
+              },
+            ),
           ],
         ),
       ),

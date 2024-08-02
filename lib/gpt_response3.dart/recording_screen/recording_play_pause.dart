@@ -33,6 +33,7 @@ class RecordingControls extends StatelessWidget {
   final VoidCallback resumeRecording;
   final VoidCallback stopRecording;
   final VoidCallback showEndMatchDialog;
+  final VoidCallback changePeriod;
   final double iconSize;
 
   const RecordingControls({
@@ -44,7 +45,7 @@ class RecordingControls extends StatelessWidget {
     required this.resumeRecording,
     required this.stopRecording,
     required this.showEndMatchDialog,
-    this.iconSize = 50.0,
+    this.iconSize = 50.0, required this.changePeriod,
   });
 
   @override
@@ -62,14 +63,9 @@ class RecordingControls extends StatelessWidget {
                 ),
                 backgroundColor: Colors.black26, // Lighter shade
                 onPressed: () {
-                  if (videoPath.isNotEmpty) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            VideoPlayerPage(filePath: videoPath),
-                      ),
-                    );
-                  }
+                changePeriod();
+
+                  
                 },
                 child: Center(
                   child: Icon(
@@ -84,7 +80,11 @@ class RecordingControls extends StatelessWidget {
                 height: 80,
                 width: 80,
                 decoration: BoxDecoration(
-                  color: Colors.black26, // Lighter shade
+                  color: isRecording
+                      ? (isPaused
+                          ? Colors.transparent
+                          : Colors.red.withOpacity(0.6))
+                      : Colors.black26, // Lighter shade
 
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 2),
@@ -101,13 +101,18 @@ class RecordingControls extends StatelessWidget {
                       startRecording();
                     }
                   },
-                  icon: Icon(
-                    isRecording
-                        ? (isPaused ? Icons.play_arrow : Icons.pause)
-                        : Icons.circle,
-                    color: Colors.white, // Icon color white
-                    size: 30,
-                  ),
+                  icon: isRecording
+                      ? (isPaused
+                          ? Icon(Icons.stop, color: Colors.red, size: 30)
+                          : Icon(Icons.circle, color: Colors.white, size: 30))
+                      : Icon(Icons.circle, color: Colors.white, size: 30),
+                  // Icon(
+                  //     isRecording
+                  //         ? (isPaused ? Icons.play_arrow : Icons.pause)
+                  //         : Icons.circle,
+                  //     color: Colors.white, // Icon color white
+                  //     size: 30,
+                  //   ),
                 ),
               ),
               const SizedBox(width: 20),

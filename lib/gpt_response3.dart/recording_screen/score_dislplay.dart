@@ -1,93 +1,3 @@
-// import 'dart:developer';
-
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-
-// import '../score_provider.dart';
-
-// class ScoreDisplayScreen extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Score Display'),
-//       ),
-//       body: Row(
-//         children: [
-//           Expanded(
-//             child: Column(
-//               children: [
-//                 Text(
-//                   'Red Team',
-//                   style: TextStyle(
-//                     fontSize: 20,
-//                     color: Colors.red,
-//                     fontWeight: FontWeight.bold,
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: Consumer<ScoreProvider>(
-//                     builder: (context, scoreProvider, child) {
-//                       return ListView(
-//                         children: scoreProvider.scores
-//                             .where((score) => score.color == Colors.red)
-//                             .map((score) => ListTile(
-//                                   title: Text(score.description),
-//                                   trailing: IconButton(
-//                                     icon: Icon(Icons.delete),
-//                                     onPressed: () {
-//                                       log('score.matchScoreID  ${score.matchScoreID}');
-//                                       scoreProvider.deleteScore(score.matchScoreID);
-//                                     },
-//                                   ),
-//                                 ))
-//                             .toList(),
-//                       );
-//                     },
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//           Expanded(
-//             child: Column(
-//               children: [
-//                 Text(
-//                   'Green Team',
-//                   style: TextStyle(
-//                     fontSize: 20,
-//                     color: Colors.green,
-//                     fontWeight: FontWeight.bold,
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: Consumer<ScoreProvider>(
-//                     builder: (context, scoreProvider, child) {
-//                       return ListView(
-//                         children: scoreProvider.scores
-//                             .where((score) => score.color == Colors.green)
-//                             .map((score) => ListTile(
-//                                   title: Text(score.description),
-//                                   trailing: IconButton(
-//                                     icon: Icon(Icons.delete),
-//                                     onPressed: () {
-//                                       scoreProvider.deleteScore(score.matchScoreID);
-//                                     },
-//                                   ),
-//                                 ))
-//                             .toList(),
-//                       );
-//                     },
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 import 'package:camera_recording_game/gpt_response3.dart/resonsive_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -98,23 +8,68 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ScoreDisplayScreen extends StatelessWidget {
+  final ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollGreenController = ScrollController();
+  // void _showDeleteConfirmationDialog(BuildContext context, Score score) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text('Delete Confirmation'),
+  //         content: Text('Are you sure you want to delete this score?'),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             child: Text('Delete'),
+  //             onPressed: () {
+  //               context.read<ScoreProvider>().deleteScore(score.matchScoreID);
+  //               Navigator.of(context).pop();
+  //             },
+  //           ),
+  //           TextButton(
+  //             child: Text('Cancel'),
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+
   void _showDeleteConfirmationDialog(BuildContext context, Score score) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Delete Confirmation'),
-          content: Text('Are you sure you want to delete this score?'),
+          title: const Text('Delete Confirmation'),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Are you sure you want to delete the below score?'),
+              const SizedBox(height: 8.0),
+              Text('Period: ${score.period}',
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text('Name: ${score.scorer}',
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(
+                  'Color: ${score.color.value.toString() == "4283215696" ? "Green" : "Red"}',
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text('ScoreLine: ${score.description}',
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+            ],
+          ),
           actions: <Widget>[
             TextButton(
-              child: Text('Delete'),
+              child: const Text('Delete'),
               onPressed: () {
                 context.read<ScoreProvider>().deleteScore(score.matchScoreID);
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -132,7 +87,7 @@ class ScoreDisplayScreen extends StatelessWidget {
 
     return isPortrait
         ? SizedBox(
-            height: MediaQuery.of(context).size.height * 0.55,
+            height: MediaQuery.of(context).size.height * 0.5,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -142,8 +97,14 @@ class ScoreDisplayScreen extends StatelessWidget {
                   width: 50,
                   child: Consumer<ScoreProvider>(
                     builder: (context, scoreProvider, child) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _scrollController
+                            .jumpTo(_scrollController.position.maxScrollExtent);
+                      });
                       return ListView(
+                        controller: _scrollController,
                         shrinkWrap: true,
+                        reverse: true,
                         children: _buildPeriodScores(
                             context, scoreProvider, Colors.red),
                       );
@@ -156,7 +117,13 @@ class ScoreDisplayScreen extends StatelessWidget {
                   width: 50,
                   child: Consumer<ScoreProvider>(
                     builder: (context, scoreProvider, child) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _scrollGreenController.jumpTo(
+                            _scrollGreenController.position.maxScrollExtent);
+                      });
                       return ListView(
+                        controller: _scrollGreenController,
+                        reverse: true,
                         shrinkWrap: true,
                         children: _buildPeriodScores(
                             context, scoreProvider, Colors.green),
@@ -168,39 +135,55 @@ class ScoreDisplayScreen extends StatelessWidget {
             ),
           )
         : SizedBox(
-            height: MediaQuery.of(context).size.height * 0.55,
+            height: MediaQuery.of(context).size.height * 0.5,
             child: Row(
               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
+                const SizedBox(
                   width: 130,
                 ),
-                SizedBox(
+                Container(
+                  alignment: Alignment.center,
+                  color: Colors.red.withOpacity(0.3),
                   width: 50,
                   child: Consumer<ScoreProvider>(
                     builder: (context, scoreProvider, child) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _scrollController
+                            .jumpTo(_scrollController.position.maxScrollExtent);
+                      });
                       return ListView(
+                        controller: _scrollController,
                         shrinkWrap: true,
+                        reverse: true,
                         children: _buildPeriodScores(
                             context, scoreProvider, Colors.red),
                       );
                     },
                   ),
                 ),
-                Spacer(),
-                SizedBox(
+                const Spacer(),
+                Container(
+                  alignment: Alignment.center,
+                  color: Colors.green.withOpacity(0.3),
                   width: 50,
                   child: Consumer<ScoreProvider>(
                     builder: (context, scoreProvider, child) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _scrollGreenController.jumpTo(
+                            _scrollGreenController.position.maxScrollExtent);
+                      });
                       return ListView(
                         shrinkWrap: true,
+                        controller: _scrollGreenController,
+                        reverse: true,
                         children: _buildPeriodScores(
                             context, scoreProvider, Colors.green),
                       );
                     },
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 120,
                 ),
               ],
@@ -225,17 +208,17 @@ class ScoreDisplayScreen extends StatelessWidget {
           children: [
             Container(
               color: Colors.black,
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Text(
                 'P$period',
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            ...scores
+            ...scores.reversed
                 .map(
                   (score) => GestureDetector(
                     onTap: () {
@@ -244,10 +227,10 @@ class ScoreDisplayScreen extends StatelessWidget {
                     },
                     child: Container(
                       // color: color.withOpacity(0.7),
-                      padding: EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Text(
                         score.description,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold),
@@ -256,19 +239,6 @@ class ScoreDisplayScreen extends StatelessWidget {
                     ),
                   ),
                 )
-
-                // ListTile(
-                //       title: Text(
-                //         score.description,
-                //         style: TextStyle(color: Colors.blue),
-                //       ),
-                //       trailing: IconButton(
-                //         icon: Icon(Icons.delete, color: Colors.blue),
-                //         onPressed: () {
-                //           scoreProvider.deleteScore(score.matchScoreID);
-                //         },
-                //       ),
-                //     ))
                 .toList(),
           ],
         ),
