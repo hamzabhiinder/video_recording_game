@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:camera_recording_game/gpt_response3.dart/resonsive_helper.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:camera_recording_game/gpt_response3.dart/video_player_page.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,22 @@ class _MatchListScreenState extends State<MatchListScreen> {
     _matchesFuture = getAllMatches();
   }
 
-  Future<List<Map<String, String>>> getAllMatches() async {
+  Future<String> _getStorageDirectory() async {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      final directory = await getExternalStorageDirectory();
+      if (directory == null) {
+        throw Exception('External storage directory not found');
+      }
+      return directory.path;
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      final directory = await getApplicationDocumentsDirectory();
+      return directory.path;
+    } else {
+      throw UnsupportedError('Unsupported platform');
+    }
+  }
+
+  /* Future<List<Map<String, String>>> getAllMatches() async {
     final directory = await getExternalStorageDirectory();
     if (directory == null) {
       throw Exception('External storage directory not found');
@@ -42,10 +58,8 @@ class _MatchListScreenState extends State<MatchListScreen> {
 
     for (var matchDir in matchDirs) {
       if (matchDir is Directory) {
-        final videoPath =
-            '${matchDir.path}/${path.basename(matchDir.path)}.mp4';
-        final scoreFilePath =
-            '${matchDir.path}/${path.basename(matchDir.path)}.json';
+        final videoPath = '${matchDir.path}/${path.basename(matchDir.path)}.mp4';
+        final scoreFilePath = '${matchDir.path}/${path.basename(matchDir.path)}.json';
         log('scoreFilePath ${scoreFilePath}');
         if (File(videoPath).existsSync() && File(scoreFilePath).existsSync()) {
           final scoreFile = File(scoreFilePath);
@@ -60,7 +74,39 @@ class _MatchListScreenState extends State<MatchListScreen> {
             'date': DateTime.now().toString(),
           });
         }
-      }         
+      }
+    }
+    matches.sort((a, b) => b['date']!.compareTo(a['date']!));
+    return matches;
+  }
+*/
+
+  Future<List<Map<String, String>>> getAllMatches() async {
+    final storagePath = await _getStorageDirectory();
+    final videoDir = Directory('$storagePath/MatchVideos');
+    if (!await videoDir.exists()) {
+      return [];
+    }
+
+    final List<Map<String, String>> matches = [];
+    final matchDirs = videoDir.listSync();
+
+    for (var matchDir in matchDirs) {
+      if (matchDir is Directory) {
+        final videoPath = '${matchDir.path}/${path.basename(matchDir.path)}.mp4';
+        final scoreFilePath = '${matchDir.path}/${path.basename(matchDir.path)}.json';
+        log('scoreFilePath $scoreFilePath');
+        if (File(videoPath).existsSync() && File(scoreFilePath).existsSync()) {
+          final scoreFile = File(scoreFilePath);
+          final scoreContent = jsonDecode(await scoreFile.readAsString());
+          log('scoreContent $scoreContent');
+          matches.add({
+            'videoPath': videoPath,
+            'scoreFilePath': scoreFilePath,
+            'date': DateTime.now().toString(),
+          });
+        }
+      }
     }
     matches.sort((a, b) => b['date']!.compareTo(a['date']!));
     return matches;
@@ -147,8 +193,7 @@ class _MatchListScreenState extends State<MatchListScreen> {
                     } else if (!snapshot.hasData) {
                       return const Center(child: Text('No data available'));
                     } else {
-                      final List<dynamic> results =
-                          snapshot.data as List<dynamic>;
+                      final List<dynamic> results = snapshot.data as List<dynamic>;
                       final duration = results[0] as Duration;
                       final scoreData = results[1] as Map<String, dynamic>?;
                       log('scoreData   ${scoreData}');
@@ -188,13 +233,10 @@ class _MatchListScreenState extends State<MatchListScreen> {
                               child: FutureBuilder(
                                 future: _getVideoThumbnail(match['videoPath']!),
                                 builder: (context, snapshot) {
-                                  if (snapshot.connectionState ==
-                                      ConnectionState.waiting) {
-                                    return const Center(
-                                        child: CircularProgressIndicator());
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return const Center(child: CircularProgressIndicator());
                                   } else if (snapshot.hasError) {
-                                    return const Center(
-                                        child: Icon(Icons.error));
+                                    return const Center(child: Icon(Icons.error));
                                   } else {
                                     return ClipRRect(
                                       borderRadius: BorderRadius.circular(15),

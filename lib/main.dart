@@ -8,6 +8,7 @@ import 'package:camera_recording_game/gpt_response3.dart/recording_screen/score_
 import 'package:camera_recording_game/gpt_response3.dart/resonsive_helper.dart';
 import 'package:camera_recording_game/gpt_response3.dart/stopWathch/match_list_screen.dart';
 import 'package:camera_recording_game/gpt_response3.dart/stopWathch/stopwatch_provider.dart';
+import 'package:camera_recording_game/utils.dart';
 import 'package:gal/gal.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:provider/provider.dart';
@@ -124,28 +125,29 @@ class _RecordScreenState extends State<RecordScreen> {
       await _initializeControllerFuture;
       final filePathName = DateTime.now().millisecondsSinceEpoch;
       // Get external storage directory
-      final directory = await getExternalStorageDirectory();
-      if (directory != null) {
-        final filePath = join(directory.path, '$filePathName}.mp4');
-        log('filePath $filePath');
+      // final directory = await getExternalStorageDirectory();
+      final directory = await getStorageDirectory();
+      // if (directory != null) {
+      final filePath = join(directory, '$filePathName}.mp4');
+      log('filePath $filePath');
 
-        // Start video recording
-        await _controller.startVideoRecording();
+      // Start video recording
+      await _controller.startVideoRecording();
 
-        // Start stopwatch
-        context.read<StopwatchProvider>().startStopwatch();
+      // Start stopwatch
+      context.read<StopwatchProvider>().startStopwatch();
 
-        /////
+      /////
 
-        setState(() {
-          isRecording = true;
-          videoPath = filePath;
-          isPaused = false;
-          log('videoPath $videoPath');
-        });
-      } else {
-        throw Exception('External storage directory not found');
-      }
+      setState(() {
+        isRecording = true;
+        videoPath = filePath;
+        isPaused = false;
+        log('videoPath $videoPath');
+      });
+      // } else {
+      //   throw Exception('External storage directory not found');
+      // }
     } catch (e) {
       setState(() {
         isRecording = false;
@@ -209,15 +211,13 @@ class _RecordScreenState extends State<RecordScreen> {
                   child: Text('Save'),
                   onPressed: () {
                     if (selectedDecision != null) {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (_) => MatchInputScreen()),
-                          (route) => false);
-                      Provider.of<ScoreProvider>(context, listen: false)
-                          .endMatch(
+                      Navigator.pushAndRemoveUntil(context,
+                          MaterialPageRoute(builder: (_) => MatchInputScreen()), (route) => false);
+                      Provider.of<ScoreProvider>(context, listen: false).endMatch(
                         selectedDecision!,
-                        context.read<StopwatchProvider>().formatDuration(
-                            context.read<StopwatchProvider>().elapsedTime),
+                        context
+                            .read<StopwatchProvider>()
+                            .formatDuration(context.read<StopwatchProvider>().elapsedTime),
                         reason,
                       );
 
@@ -231,8 +231,7 @@ class _RecordScreenState extends State<RecordScreen> {
                   child: Text('Exit'),
                   onPressed: () {
                     Navigator.of(context).pop(); // Close the End Match dialog
-                    _showExitConfirmationDialog(
-                        context); // Show the confirmation dialog
+                    _showExitConfirmationDialog(context); // Show the confirmation dialog
                   },
                 ),
               ],
@@ -263,14 +262,11 @@ class _RecordScreenState extends State<RecordScreen> {
                 if (videoPath.isNotEmpty) {
                   deleteVideoFile(videoPath);
                 }
-                Provider.of<ScoreProvider>(context, listen: false)
-                    .resetMatchState();
+                Provider.of<ScoreProvider>(context, listen: false).resetMatchState();
                 context.read<StopwatchProvider>().resetStopwatch();
 
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (_) => MatchInputScreen()),
-                    (route) => false);
+                Navigator.pushAndRemoveUntil(context,
+                    MaterialPageRoute(builder: (_) => MatchInputScreen()), (route) => false);
               },
               child: Text('Exit'),
             ),
@@ -292,20 +288,17 @@ class _RecordScreenState extends State<RecordScreen> {
     }
   }
 
-  Future<void> stopRecording(
-      {required BuildContext context, bool? isVideoPlayBackScreen}) async {
+  Future<void> stopRecording({required BuildContext context, bool? isVideoPlayBackScreen}) async {
     try {
       final XFile videoFile = await _controller.stopVideoRecording();
       context.read<StopwatchProvider>().stopStopwatch();
 
       final tempVideoPath = videoFile.path;
-      final directory = await getExternalStorageDirectory();
-      if (directory == null) {
-        throw Exception('External storage directory not found');
-      }
+      // final directory = await getExternalStorageDirectory();
+      final directory = await getStorageDirectory();
 
       final uniqueID = DateTime.now().millisecondsSinceEpoch.toString();
-      final videoDir = Directory('${directory.path}/MatchVideos/$uniqueID');
+      final videoDir = Directory('${directory}/MatchVideos/$uniqueID');
       if (!await videoDir.exists()) {
         await videoDir.create(recursive: true);
       }
@@ -316,12 +309,9 @@ class _RecordScreenState extends State<RecordScreen> {
 
       // Save score data
       final scoreProvider = context.read<ScoreProvider>();
-      final scoreData =
-          scoreProvider.scores.map((score) => score.toMap()).toList();
-      final redPlayerName =
-          scoreProvider.matchDetails['RedOpp']; // Add this in your provider
-      final greenPlayerName =
-          scoreProvider.matchDetails['GreenOpp']; // Add this in your provider
+      final scoreData = scoreProvider.scores.map((score) => score.toMap()).toList();
+      final redPlayerName = scoreProvider.matchDetails['RedOpp']; // Add this in your provider
+      final greenPlayerName = scoreProvider.matchDetails['GreenOpp']; // Add this in your provider
       final timestamp = DateTime.now();
       final matchData = {
         'scores': scoreData,
@@ -420,8 +410,7 @@ class _RecordScreenState extends State<RecordScreen> {
   @override
   Widget build(BuildContext context) {
     final matchDetails = Provider.of<ScoreProvider>(context).matchDetails;
-    final bool isPortrait =
-        MediaQuery.of(context).orientation == Orientation.portrait;
+    final bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
     return Scaffold(
       backgroundColor: Colors.black,
       body: FutureBuilder<void>(
@@ -470,8 +459,7 @@ class _RecordScreenState extends State<RecordScreen> {
                           pauseRecording: () => pauseRecording(context),
                           resumeRecording: () => resumeRecording(context),
                           stopRecording: () => stopRecording(context: context),
-                          showEndMatchDialog: () =>
-                              _showEndMatchDialog(context),
+                          showEndMatchDialog: () => _showEndMatchDialog(context),
                           changePeriod: () => changePeriod(context),
                         ),
                       )
@@ -487,8 +475,7 @@ class _RecordScreenState extends State<RecordScreen> {
                           pauseRecording: () => pauseRecording(context),
                           resumeRecording: () => resumeRecording(context),
                           stopRecording: () => stopRecording(context: context),
-                          showEndMatchDialog: () =>
-                              _showEndMatchDialog(context),
+                          showEndMatchDialog: () => _showEndMatchDialog(context),
                           changePeriod: () => changePeriod(context),
                         ),
                       ),
@@ -740,21 +727,13 @@ class ScoreButton extends StatelessWidget {
       onPressed: isRecording
           ? () async {
               context.read<StopwatchProvider>().lapStopwatch();
-              String lapTime =
-                  context.read<StopwatchProvider>().lapTimeStringData;
+              String lapTime = context.read<StopwatchProvider>().lapTimeStringData;
               List<ScoreModel> scpreModel = await matchDAO.getScores();
-              var sc =
-                  scpreModel.where((element) => element.score == description);
+              var sc = scpreModel.where((element) => element.score == description);
               onScoreTap();
               log("ONTAP WORJGING ${lapTime}  ${sc.first.scoreID} ${sc.first.points} ONTAP WORJGING ${sc.first.score}");
-              Provider.of<ScoreProvider>(context, listen: false).addScore(
-                  score,
-                  description,
-                  player,
-                  period,
-                  color,
-                  sc.first.scoreID,
-                  lapTime);
+              Provider.of<ScoreProvider>(context, listen: false)
+                  .addScore(score, description, player, period, color, sc.first.scoreID, lapTime);
 
               context.read<StopwatchProvider>().lapStopwatch();
               log('printing $description');
