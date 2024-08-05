@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:camera_recording_game/gpt_response3.dart/db_helper.dart';
-import 'package:camera_recording_game/gpt_response3.dart/models/combile_model.dart';
-import 'package:camera_recording_game/gpt_response3.dart/models/match_Score.dart';
-import 'package:camera_recording_game/gpt_response3.dart/models/match_model.dart';
+import 'package:camera_recording_game/screens_with_data/db_helper.dart';
+import 'package:camera_recording_game/screens_with_data/models/combile_model.dart';
+import 'package:camera_recording_game/screens_with_data/models/match_Score.dart';
+import 'package:camera_recording_game/screens_with_data/models/match_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class MatchDAO {

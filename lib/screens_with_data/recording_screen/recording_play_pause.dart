@@ -1,21 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:camera_recording_game/gpt_response3.dart/match_DAO.dart';
-import 'package:camera_recording_game/gpt_response3.dart/match_input_Screen.dart';
-import 'package:camera_recording_game/gpt_response3.dart/models/combile_model.dart';
-import 'package:camera_recording_game/gpt_response3.dart/resonsive_helper.dart';
-import 'package:camera_recording_game/gpt_response3.dart/score_provider.dart';
-import 'package:camera_recording_game/gpt_response3.dart/stopWathch/match_list_screen.dart';
-import 'package:camera_recording_game/gpt_response3.dart/stopWathch/stopwatch_provider.dart';
-import 'package:camera_recording_game/gpt_response3.dart/video_player_page.dart';
+import 'package:camera_recording_game/screens_with_data/match_DAO.dart';
+import 'package:camera_recording_game/screens_with_data/match_input_Screen.dart';
+import 'package:camera_recording_game/screens_with_data/models/combile_model.dart';
+import 'package:camera_recording_game/screens_with_data/resonsive_helper.dart';
+import 'package:camera_recording_game/screens_with_data/score_provider.dart';
+import 'package:camera_recording_game/screens_with_data/stopWathch/match_list_screen.dart';
+import 'package:camera_recording_game/screens_with_data/stopWathch/stopwatch_provider.dart';
+import 'package:camera_recording_game/screens_with_data/video_player_page.dart';
 import 'package:camera_recording_game/main.dart';
 import 'package:gal/gal.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:provider/provider.dart';
 
-import '/gpt_response3.dart/screen_ui.dart';
-import '/reording_app_hint.dart/result.dart';
+import '../screen_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:path_provider/path_provider.dart';

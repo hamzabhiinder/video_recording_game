@@ -1,4 +1,4 @@
-import 'package:camera_recording_game/gpt_response3.dart/resonsive_helper.dart';
+import 'package:camera_recording_game/screens_with_data/resonsive_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

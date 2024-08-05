@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:camera_recording_game/gpt_response3.dart/match_DAO.dart';
-import 'package:camera_recording_game/gpt_response3.dart/models/combile_model.dart';
-import 'package:camera_recording_game/gpt_response3.dart/models/match_Score.dart';
-import 'package:camera_recording_game/gpt_response3.dart/models/match_model.dart';
+import 'package:camera_recording_game/screens_with_data/match_DAO.dart';
+import 'package:camera_recording_game/screens_with_data/models/combile_model.dart';
+import 'package:camera_recording_game/screens_with_data/models/match_Score.dart';
+import 'package:camera_recording_game/screens_with_data/models/match_model.dart';
 import 'package:flutter/material.dart';
 
 class Score {

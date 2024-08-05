@@ -1,15 +1,14 @@
-import 'package:camera_recording_game/gpt_response3.dart/resonsive_helper.dart';
-import 'package:camera_recording_game/gpt_response3.dart/score_provider.dart';
-import 'package:camera_recording_game/gpt_response3.dart/screen_ui.dart';
-import 'package:camera_recording_game/gpt_response3.dart/stopWathch/stopwatch_provider.dart';
-import 'package:camera_recording_game/gpt_response3.dart/video_player_page.dart';
+import 'package:camera_recording_game/screens_with_data/resonsive_helper.dart';
+import 'package:camera_recording_game/screens_with_data/score_provider.dart';
+import 'package:camera_recording_game/screens_with_data/screen_ui.dart';
+import 'package:camera_recording_game/screens_with_data/stopWathch/stopwatch_provider.dart';
+import 'package:camera_recording_game/screens_with_data/video_player_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:camera/camera.dart';
 
-import '../../reording_app_hint.dart/result.dart';
 
 class HeaderCameraScoreWidget extends StatelessWidget {
   final bool isOpaque;

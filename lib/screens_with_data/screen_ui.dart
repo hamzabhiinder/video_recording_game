@@ -1,12 +1,12 @@
 import 'dart:developer';
 
-import 'package:camera_recording_game/gpt_response3.dart/resonsive_helper.dart';
-import 'package:camera_recording_game/gpt_response3.dart/screen_ui_Score.dart';
-import 'package:camera_recording_game/reording_app_hint.dart/result.dart';
+import 'package:camera_recording_game/screens_with_data/resonsive_helper.dart';
+import 'package:camera_recording_game/screens_with_data/result.dart';
+import 'package:camera_recording_game/screens_with_data/screen_ui_Score.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 
-import '/gpt_response3.dart/score_provider.dart';
+import 'score_provider.dart';
 import '/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

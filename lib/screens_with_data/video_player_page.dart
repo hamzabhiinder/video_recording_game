@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:camera_recording_game/gpt_response3.dart/match_input_Screen.dart';
-import 'package:camera_recording_game/gpt_response3.dart/stopWathch/stopwatch_provider.dart';
+import 'package:camera_recording_game/screens_with_data/match_input_Screen.dart';
+import 'package:camera_recording_game/screens_with_data/stopWathch/stopwatch_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';

@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:camera_recording_game/gpt_response3.dart/models/match_model.dart';
-import 'package:camera_recording_game/gpt_response3.dart/match_DAO.dart';
-import 'package:camera_recording_game/gpt_response3.dart/stopWathch/match_list_screen.dart';
+import 'package:camera_recording_game/screens_with_data/models/match_model.dart';
+import 'package:camera_recording_game/screens_with_data/match_DAO.dart';
+import 'package:camera_recording_game/screens_with_data/stopWathch/match_list_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

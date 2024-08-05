@@ -1,4 +1,4 @@
-import 'package:camera_recording_game/gpt_response3.dart/score_provider.dart';
+import 'package:camera_recording_game/screens_with_data/score_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

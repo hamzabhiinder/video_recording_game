@@ -1,12 +1,12 @@
 import 'dart:developer';
 
-import 'package:camera_recording_game/gpt_response3.dart/stopWathch/stopwatch_provider.dart';
+import 'package:camera_recording_game/screens_with_data/stopWathch/stopwatch_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import 'score_provider.dart';
 
-import '../gpt_response3.dart/score_provider.dart';
-import '../gpt_response3.dart/video_player_page.dart';
+import 'score_provider.dart';
+import 'video_player_page.dart';
 
 class ResultScreen extends StatelessWidget {
   final String? videoPath;
