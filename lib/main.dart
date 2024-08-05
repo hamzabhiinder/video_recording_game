@@ -458,7 +458,16 @@ class _RecordScreenState extends State<RecordScreen> {
                           pauseRecording: () => pauseRecording(context),
                           resumeRecording: () => resumeRecording(context),
                           stopRecording: () => stopRecording(context: context),
-                          showEndMatchDialog: () => _showEndMatchDialog(context),
+                          // showEndMatchDialog: () => _showEndMatchDialog(context),
+                          showEndMatchDialog: () {
+                            if (isRecording) {
+                              stopRecording(context: context)
+                                  .then((value) => _showEndMatchDialog(context));
+                            } else {
+                              _showEndMatchDialog(context);
+                            }
+                          },
+
                           changePeriod: () => changePeriod(context),
                         ),
                       )
@@ -474,7 +483,15 @@ class _RecordScreenState extends State<RecordScreen> {
                           pauseRecording: () => pauseRecording(context),
                           resumeRecording: () => resumeRecording(context),
                           stopRecording: () => stopRecording(context: context),
-                          showEndMatchDialog: () => _showEndMatchDialog(context),
+                          // showEndMatchDialog: () => _showEndMatchDialog(context),
+                           showEndMatchDialog: () {
+                            if (isRecording) {
+                              stopRecording(context: context)
+                                  .then((value) => _showEndMatchDialog(context));
+                            } else {
+                              _showEndMatchDialog(context);
+                            }
+                          },
                           changePeriod: () => changePeriod(context),
                         ),
                       ),

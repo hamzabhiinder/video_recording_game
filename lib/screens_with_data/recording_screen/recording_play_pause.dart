@@ -44,7 +44,8 @@ class RecordingControls extends StatelessWidget {
     required this.resumeRecording,
     required this.stopRecording,
     required this.showEndMatchDialog,
-    this.iconSize = 50.0, required this.changePeriod,
+    this.iconSize = 50.0,
+    required this.changePeriod,
   });
 
   @override
@@ -62,9 +63,7 @@ class RecordingControls extends StatelessWidget {
                 ),
                 backgroundColor: Colors.black26, // Lighter shade
                 onPressed: () {
-                changePeriod();
-
-                  
+                  changePeriod();
                 },
                 child: Center(
                   child: Icon(
@@ -80,9 +79,7 @@ class RecordingControls extends StatelessWidget {
                 width: 80,
                 decoration: BoxDecoration(
                   color: isRecording
-                      ? (isPaused
-                          ? Colors.transparent
-                          : Colors.red.withOpacity(0.6))
+                      ? (isPaused ? Colors.transparent : Colors.red.withOpacity(0.6))
                       : Colors.black26, // Lighter shade
 
                   shape: BoxShape.circle,
@@ -122,13 +119,12 @@ class RecordingControls extends StatelessWidget {
                 ),
                 backgroundColor: Colors.black26, // Lighter shade
                 onPressed: () {
-                  if (isRecording) {
-                    stopRecording();
-                  }
+                  // if (isRecording) {
+                  //   stopRecording();
+                  // }
                   showEndMatchDialog();
                 },
-                child:
-                    Center(child: DiamondIcon(size: 30, color: Colors.white)),
+                child: Center(child: DiamondIcon(size: 30, color: Colors.white)),
               ),
             ],
           ),
